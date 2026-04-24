@@ -30,7 +30,7 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
                 <header className="single-header">
                     <div className="s-cats ecat-text ecat-size-big custom-size">
                         <div className="p-categories">
-                            <Link href={`${homeLink}/${post.category_slug}`} className="p-category" rel="category">
+                            <Link href={`${homeLink}/${post.categorySlug}`} className="p-category" rel="category">
                                 {post.category.toUpperCase()}
                             </Link>
                         </div>
@@ -117,7 +117,7 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
                             </div>
                         )}
 
-                        <div className="entry-content rbct has-drop-cap" dangerouslySetInnerHTML={{ __html: post.content }} />
+                        <div className="entry-content rbct has-drop-cap" dangerouslySetInnerHTML={{ __html: post.content || '' }} />
                     </div>
                 </div>
             </div>
