@@ -7,6 +7,7 @@ import { formatPostDate } from '@/utils/dateFormatter';
 import { usePathname } from 'next/navigation';
 import { translations, Locale } from '@/utils/translations';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface SinglePostProps { post: Post; }
 
@@ -98,7 +99,10 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
 
                     <div className="e-ct-outer">
                         <div className="featured-image-v6">
-                             <img src={post.image} alt={post.title} width="1200" height="675" />
+                             <Image 
+                                src={(post.image && post.image.startsWith('http')) ? post.image : 'https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev/azerbaycanda-yeni-qaydalar-quvveye-mindi.webp'} 
+                                alt={post.title} width={1200} height={675} priority sizes="100vw" 
+                             />
                         </div>
 
                         {post.audio_url && (

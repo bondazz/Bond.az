@@ -4,6 +4,8 @@ import { Metadata } from 'next';
 import { getPosts } from '@/utils/postFetcher';
 import Script from 'next/script';
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const t = translations[lang as Locale] || translations.az;

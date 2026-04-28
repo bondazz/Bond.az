@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Post } from '@/data/posts';
 import { formatPostDate } from '@/utils/dateFormatter';
 
@@ -21,12 +22,17 @@ const PostCard = ({ post, isOverlay = false, isSmall = false, lang: propLang }: 
     };
 
     const postLink = getLocalizedPath(`/${post.categorySlug}/${post.slug}`);
+    
+    // Fallback for empty or invalid image URLs
+    const safeImageUrl = (post.image && post.image.startsWith('http')) 
+        ? post.image 
+        : 'https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev/azerbaycanda-yeni-qaydalar-quvveye-mindi.webp'; // Safe fallback from R2
 
     return (
         <div className={`post-card ${isOverlay ? 'overlay-post' : ''} ${isSmall ? 'small-post' : ''}`}>
             <div className="featured-img-holder">
                 <Link href={postLink} className="p-flink" target="_blank" rel="noopener noreferrer">
-                    <img src={post.image} alt={post.title} width="800" height="450" />
+                    <Image src={safeImageUrl} alt={post.title} width={800} height={450} priority={isOverlay} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                 </Link>
                 {!isOverlay && <div className="img-blur-edge"></div>}
             </div>

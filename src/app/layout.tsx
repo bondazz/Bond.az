@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -32,12 +31,10 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
-        <Script
-          id="theme-switcher"
-          strategy="beforeInteractive"
-        >
-          {`
+      <head>
+        <link rel="preconnect" href="https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev" />
+        <script dangerouslySetInnerHTML={{ __html: `
             (function() {
               try {
                 var savedTheme = localStorage.getItem('theme');
@@ -46,8 +43,9 @@ export default async function RootLayout({
                 }
               } catch (e) {}
             })();
-          `}
-        </Script>
+          ` }} />
+      </head>
+      <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} value={{ light: 'light-mode', dark: 'dark' }}>
           <Header />
           <main className="flex-1">

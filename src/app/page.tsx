@@ -2,6 +2,8 @@ import HeroSection from "@/components/HeroSection";
 import { Metadata } from 'next';
 import { translations } from '@/utils/translations';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
     title: "Bond.az - Azərbaycanın Ən Son Xəbər Portalı",
     description: "Azərbaycan və dünyada baş verən güncəl xəbərlər, siyasət, iqtisadiyyat, cəmiyyət və texnologiya yenilikləri Bond.az-da. Ətraflı analizlər və operativ xəbər axını.",

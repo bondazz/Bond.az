@@ -43,16 +43,27 @@ const InfiniteScroll = ({ initialPosts, lang, categorySlug }: InfiniteScrollProp
     }, [hasMore, loading, page]);
 
     const loadMore = async () => {
+        if (loading) return;
         setLoading(true);
-        const newPosts = await fetchMorePosts(lang, categorySlug, page);
-        
-        if (newPosts.length === 0) {
-            setHasMore(false);
-        } else {
-            setPosts(prev => [...prev, ...newPosts]);
-            setPage(prev => prev + 1);
+        try {
+            const newPosts = await fetchMorePosts(lang, categorySlug, page);
+            
+            if (newPosts.length === 0) {
+                setHasMore(false);
+            } else {
+                setPosts(prev => {
+                    // Filter out any posts that already exist in the list to prevent duplicate keys
+                    const existingIds = new Set(prev.map(p => p.id));
+                    const uniqueNewPosts = newPosts.filter(p => !existingIds.has(p.id));
+                    return [...prev, ...uniqueNewPosts];
+                });
+                setPage(prev => prev + 1);
+            }
+        } catch (error) {
+            console.error("Failed to load more posts:", error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (

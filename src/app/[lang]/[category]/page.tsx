@@ -4,6 +4,8 @@ import { translations, Locale } from '@/utils/translations';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: { params: Promise<{ lang: string, category: string }> }): Promise<Metadata> {
     const { lang, category } = await params;
     const siteUrl = "https://bond.az";

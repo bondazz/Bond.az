@@ -1,6 +1,6 @@
 import React from 'react';
 import SinglePost from '@/components/SinglePost';
-import { getPostBySlug, getPosts } from '@/utils/postFetcher';
+import { getPostBySlug, getPosts, getRelatedPostsByCommonId } from '@/utils/postFetcher';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
@@ -17,8 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
     const alternates: Record<string, string> = {};
     if (post.commonId) {
-        const allPosts = await getPosts();
-        const relatedPosts = allPosts.filter(p => p.commonId === post.commonId);
+        const relatedPosts = await getRelatedPostsByCommonId(post.commonId);
         relatedPosts.forEach(rp => {
             const prefix = rp.lang === 'az' ? '' : `/${rp.lang}`;
             const locale = rp.lang === 'az' ? 'az-AZ' : rp.lang === 'ru' ? 'ru-RU' : 'en-US';

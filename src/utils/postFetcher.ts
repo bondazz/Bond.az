@@ -2,7 +2,8 @@ import { supabase } from './supabase';
 import { Post } from '@/data/posts';
 
 export async function getPosts(lang?: string, categorySlug?: string, page: number = 1, limit: number = 30) {
-    let query = supabase.from('posts').select('*');
+    // Optimized: Only select necessary fields for list views (exclude 'content')
+    let query = supabase.from('posts').select('id, common_id, lang, title, category, category_slug, slug, image, summary, likes, dislikes, views, date, author, audio_url');
 
     if (lang) {
         query = query.eq('lang', lang);
@@ -33,7 +34,6 @@ export async function getPosts(lang?: string, categorySlug?: string, page: numbe
         slug: p.slug,
         image: p.image,
         summary: p.summary,
-        content: p.content,
         likes: p.likes,
         dislikes: p.dislikes,
         views: p.views,
@@ -74,4 +74,22 @@ export async function getPostBySlug(slug: string, lang: string) {
         author: data.author,
         audio_url: data.audio_url
     } as Post;
+}
+
+export async function getRelatedPostsByCommonId(commonId: string) {
+    const { data, error } = await supabase
+        .from('posts')
+        .select('lang, category_slug, slug')
+        .eq('common_id', commonId);
+
+    if (error || !data) {
+        console.error('Error fetching related posts:', error);
+        return [];
+    }
+
+    return data.map(p => ({
+        lang: p.lang,
+        categorySlug: p.category_slug,
+        slug: p.slug
+    }));
 }
