@@ -3,6 +3,7 @@ import './HeroSection.css';
 import { getPosts } from '@/utils/postFetcher';
 import PostCard from './PostCard';
 import InfiniteScroll from './InfiniteScroll';
+import Image from 'next/image';
 
 const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
     const lang = propLang || 'az';
@@ -18,7 +19,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
             {/* Left Ads */}
             <aside className="side-ads left">
                 <div className="ads-box placeholder-ads">
-                    <img src="/sidebar-ads.png" alt="Sidebar Ad" width="160" height="600" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" decoding="async" />
+                    <Image src="/sidebar-ads.png" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} priority={true} />
                 </div>
             </aside>
 
@@ -39,7 +40,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
 
                     <div className="mid-right-col">
                         <div className="top-ads-container">
-                            <img src="/kontakt-ads.png" alt="Kontakt Ad" width="300" height="250" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" decoding="async" />
+                            <Image src="/kontakt-ads.png" alt="Kontakt Ad" width={300} height={250} style={{ width: '100%', height: '100%', objectFit: 'cover' }} priority={true} />
                         </div>
                         {heroPosts[1] && <PostCard post={heroPosts[1]} isSmall={true} lang={lang} />}
                     </div>
@@ -47,7 +48,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
 
                 {/* Banner Moved Here */}
                 <div className="top-banner-wrapper" style={{ marginBottom: '25px' }}>
-                    <img src="/accessbank-banner.png" alt="AccessBank" width="1000" height="120" className="full-top-banner" loading="lazy" decoding="async" />
+                    <Image src="/accessbank-banner.png" alt="AccessBank" width={1000} height={120} className="full-top-banner" priority={true} />
                 </div>
 
                 {/* Lower Grid: 3 Posts */}
@@ -83,7 +84,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
             {/* Right Ads */}
             <aside className="side-ads right">
                 <div className="ads-box placeholder-ads">
-                    <img src="/sidebar-ads.png" alt="Sidebar Ad" width="160" height="600" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" decoding="async" />
+                    <Image src="/sidebar-ads.png" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} priority={true} />
                 </div>
             </aside>
         </section>

@@ -3,6 +3,7 @@ import { posts } from '@/data/posts';
 import { translations, Locale } from '@/utils/translations';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import Image from 'next/image';
 
 export const revalidate = 60;
 
@@ -55,10 +56,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ lang:
                 {categoryPosts.map(post => (
                     <Link key={post.id} href={getLocalizedPath(`/${post.categorySlug}/${post.slug}`)} className="group">
                         <div className="relative overflow-hidden rounded-2xl aspect-[16/10] mb-5">
-                            <img
-                                src={post.image}
+                            <Image
+                                src={post.image || 'https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev/azerbaycanda-yeni-qaydalar-quvveye-mindi.webp'}
                                 alt={post.title}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                         </div>
                         <h2 className="text-xl font-bold leading-tight group-hover:text-red-600 transition-colors">

@@ -70,6 +70,9 @@ async function processImages() {
             } else if (post.image.startsWith('data:image')) {
                 const base64Data = post.image.replace(/^data:image\/\w+;base64,/, "");
                 originalBuffer = Buffer.from(base64Data, 'base64');
+            } else if (post.image.length > 1000) {
+                // Raw base64 string
+                originalBuffer = Buffer.from(post.image, 'base64');
             } else {
                 console.log(`Unsupported image format for post ID ${post.id}`);
                 continue;
@@ -77,8 +80,8 @@ async function processImages() {
 
             console.log('Compressing and Resizing with sharp...');
             const compressedBuffer = await sharp(originalBuffer)
-                .resize({ width: 1200, withoutEnlargement: true })
-                .webp({ quality: 75 })
+                .resize({ width: 800, height: 450, fit: 'cover' })
+                .webp({ quality: 80 })
                 .toBuffer();
 
             // Create new filename based on title

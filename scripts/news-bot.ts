@@ -144,8 +144,8 @@ async function uploadImageToR2(imageData: string | null, title: string) {
 
         console.log('--- Compressing and Resizing image with sharp... ---');
         const compressedBuffer = await sharp(originalBuffer)
-            .resize({ width: 1200, withoutEnlargement: true })
-            .webp({ quality: 75 })
+            .resize({ width: 800, height: 450, fit: 'cover' })
+            .webp({ quality: 80 })
             .toBuffer();
 
         const slugifiedTitle = slugifyTitle(title);

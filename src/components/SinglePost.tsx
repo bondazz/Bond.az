@@ -101,7 +101,7 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
                         <div className="featured-image-v6">
                              <Image 
                                 src={(post.image && post.image.startsWith('http')) ? post.image : 'https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev/azerbaycanda-yeni-qaydalar-quvveye-mindi.webp'} 
-                                alt={post.title} width={1200} height={675} priority sizes="100vw" 
+                                alt={post.title} width={800} height={450} priority sizes="100vw" 
                              />
                         </div>
 

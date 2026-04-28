@@ -2,26 +2,32 @@ import { supabase } from './supabase';
 import { Post } from '@/data/posts';
 
 export async function getPosts(lang?: string, categorySlug?: string, page: number = 1, limit: number = 30) {
-    // Optimized: Only select necessary fields for list views (exclude 'content')
-    let query = supabase.from('posts').select('id, common_id, lang, title, category, category_slug, slug, image, summary, likes, dislikes, views, date, author, audio_url');
-
-    if (lang) {
-        query = query.eq('lang', lang);
-    }
-
-    if (categorySlug) {
-        query = query.eq('category_slug', categorySlug);
-    }
-
     const offset = (page - 1) * limit;
-    const { data, error } = await query
-        .order('id', { ascending: false })
-        .range(offset, offset + limit - 1);
+    
+    // Use native fetch to enable aggressive Next.js caching and bypass supabase-js client overhead
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    let url = `${supabaseUrl}/rest/v1/posts?select=id,common_id,lang,title,category,category_slug,slug,image,summary,likes,dislikes,views,date,author,audio_url&order=id.desc&offset=${offset}&limit=${limit}`;
+    if (lang) url += `&lang=eq.${lang}`;
+    if (categorySlug) url += `&category_slug=eq.${categorySlug}`;
 
-    if (error) {
-        console.error('Error fetching posts:', error);
+    console.time('supabase-query');
+    const response = await fetch(url, {
+        headers: {
+            'apikey': anonKey!,
+            'Authorization': `Bearer ${anonKey!}`
+        },
+        next: { revalidate: 60 } // Aggressively cache for 60 seconds
+    });
+    console.timeEnd('supabase-query');
+
+    if (!response.ok) {
+        console.error('Error fetching posts:', await response.text());
         return [];
     }
+    
+    const data = await response.json();
 
     // Map DB underscore_case to JS camelCase
     return data.map(p => ({

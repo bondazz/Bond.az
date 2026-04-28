@@ -6,7 +6,15 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 // This client is for standard client-side/server-side operations
 export const supabase = createClient(
     supabaseUrl || 'https://placeholder-url.supabase.co', 
-    supabaseAnonKey || 'placeholder-key'
+    supabaseAnonKey || 'placeholder-key',
+    {
+        auth: { persistSession: false },
+        global: {
+            fetch: (url, options) => {
+                return fetch(url, { ...options, keepalive: true, cache: 'no-store' });
+            }
+        }
+    }
 );
 
 // If we need administrative/bypass RLS actions on server-side:
