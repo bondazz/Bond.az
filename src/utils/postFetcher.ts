@@ -30,7 +30,7 @@ export async function getPosts(lang?: string, categorySlug?: string, page: numbe
     const data = await response.json();
 
     // Map DB underscore_case to JS camelCase
-    return data.map(p => ({
+    return data.map((p: any) => ({
         id: p.id,
         commonId: p.common_id,
         lang: p.lang,
