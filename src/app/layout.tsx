@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import dynamic from "next/dynamic";
+const Footer = dynamic(() => import("@/components/Footer"), { ssr: true });
 import { ThemeProvider } from "next-themes";
 import { headers } from 'next/headers';
 
@@ -37,8 +38,6 @@ export default async function RootLayout({
   return (
     <html lang={lang} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} h-full antialiased`}>
       <head>
-        <link rel="preconnect" href="https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev" />
         <script dangerouslySetInnerHTML={{ __html: `
             (function() {
               try {
