@@ -118,7 +118,7 @@ const Header = () => {
             <span></span>
           </button>
 
-          <a href={getLocalizedPath("/")} className="logo-area" aria-label="Bond.az Home">
+          <a href={getLocalizedPath("/")} className="logo-area" aria-label="Bond.az Logo - Home">
             <span className="logo-icon">///</span>
             <span className="logo-text">bond.az</span>
           </a>
@@ -178,6 +178,8 @@ const Header = () => {
               onClick={toggleDarkMode}
               data-title={isDarkMode ? t.switchToLight : t.switchToDark}
               aria-label={isDarkMode ? t.switchToLight : t.switchToDark}
+              role="button"
+              tabIndex={0}
               suppressHydrationWarning
             >
               <span className="dark-mode-slide">

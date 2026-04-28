@@ -60,7 +60,7 @@ export default function Footer() {
                         <span className="text-red-600">///</span> bond.az
                     </div>
                 </Link>
-                <p className="bg-transparent text-center text-xs leading-5 text-slate-700 dark:text-slate-300 max-w-3xl md:text-left">
+                <p className="bg-transparent text-center text-xs leading-5 text-slate-900 dark:text-slate-300 max-w-3xl md:text-left">
                     {t.footerDesc}
                 </p>
             </div>
@@ -83,7 +83,7 @@ export default function Footer() {
                                             <li key={`item-${catIndex}-${secIndex}-${itemIndex}`}>
                                                 <Link
                                                     href={item.href}
-                                                    className="text-sm text-slate-700 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 transition-colors"
+                                                    className="text-sm text-slate-900 hover:text-red-600 dark:text-slate-300 dark:hover:text-red-500 transition-colors"
                                                 >
                                                     {item.name}
                                                 </Link>

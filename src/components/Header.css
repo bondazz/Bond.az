@@ -1,11 +1,4 @@
-@font-face {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 500;
-    font-display: swap;
-    src: url("https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2") format("woff2");
-    unicode-range: U+301, U+400-45F, U+490-491, U+4B0-4B1, U+2116;
-}
+
 
 :root {
     --bg-color: #0c0d0e;
@@ -14,7 +7,7 @@
     --accent-color: #ed2127;
     --border-color: #222222;
     --header-height: auto;
-    --font-main: 'Inter', sans-serif;
+    --font-main: var(--font-inter), 'Inter', sans-serif;
     --header-bottom-bg: #111111;
 }
 
@@ -75,6 +68,7 @@ html.light-mode {
     border-radius: 4px;
     position: relative;
     clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    color: #fff !important; /* Fixed contrast issue */
 }
 
 .main-nav-links {

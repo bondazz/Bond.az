@@ -31,8 +31,16 @@ const PostCard = ({ post, isOverlay = false, isSmall = false, lang: propLang }: 
     return (
         <div className={`post-card ${isOverlay ? 'overlay-post' : ''} ${isSmall ? 'small-post' : ''}`}>
             <div className="featured-img-holder">
-                <Link href={postLink} className="p-flink" target="_blank" rel="noopener noreferrer">
-                    <Image src={safeImageUrl} alt={post.title} width={800} height={450} priority={isOverlay} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                <Link href={postLink} className="p-flink" target="_blank" rel="noopener noreferrer" aria-label={post.title}>
+                    <Image 
+                        src={safeImageUrl} 
+                        alt="" // Empty alt because aria-label is on the link, or redundant alt
+                        width={800} 
+                        height={450} 
+                        priority={isOverlay} 
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="post-main-img"
+                    />
                 </Link>
                 {!isOverlay && <div className="img-blur-edge"></div>}
             </div>
@@ -52,7 +60,7 @@ const PostCard = ({ post, isOverlay = false, isSmall = false, lang: propLang }: 
                 )}
 
                 <h2 className="entry-title">
-                    <Link href={postLink} target="_blank" rel="noopener noreferrer">{post.title}</Link>
+                    <Link href={postLink} target="_blank" rel="noopener noreferrer" aria-label={post.title}>{post.title}</Link>
                 </h2>
 
                 {!isSmall && !isOverlay && <h3 className="entry-summary">{post.summary}</h3>}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin", "cyrillic"],
+});
+
 export const metadata: Metadata = {
   title: "bond.az",
   description: "News Website",
@@ -30,7 +35,7 @@ export default async function RootLayout({
   const lang = headerList.get('x-lang') || 'az';
 
   return (
-    <html lang={lang} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang={lang} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} h-full antialiased`}>
       <head>
         <link rel="preconnect" href="https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev" />
