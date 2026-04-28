@@ -34,10 +34,12 @@ const PostCard = ({ post, isOverlay = false, isSmall = false, lang: propLang }: 
                 <Link href={postLink} className="p-flink" target="_blank" rel="noopener noreferrer" aria-label={post.title}>
                     <Image 
                         src={safeImageUrl} 
-                        alt="" // Empty alt because aria-label is on the link, or redundant alt
+                        alt="" 
                         width={800} 
                         height={450} 
                         priority={isOverlay} 
+                        loading={isOverlay ? "eager" : "lazy"}
+                        {...(isOverlay ? { fetchPriority: "high" } : {})}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="post-main-img"
                     />

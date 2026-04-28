@@ -19,7 +19,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
             {/* Left Ads */}
             <aside className="side-ads left">
                 <div className="ads-box placeholder-ads">
-                    <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} priority={true} />
+                    <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             </aside>
 
@@ -40,7 +40,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
 
                     <div className="mid-right-col">
                         <div className="top-ads-container">
-                            <Image src="/kontakt-ads.webp" alt="Kontakt Ad" width={300} height={250} style={{ width: '100%', height: '100%', objectFit: 'cover' }} priority={true} />
+                            <Image src="/kontakt-ads.webp" alt="Kontakt Ad" width={300} height={250} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
                         {heroPosts[1] && <PostCard post={heroPosts[1]} isSmall={true} lang={lang} />}
                     </div>
@@ -48,7 +48,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
 
                 {/* Banner Moved Here */}
                 <div className="top-banner-wrapper" style={{ marginBottom: '25px' }}>
-                    <Image src="/accessbank-banner.webp" alt="AccessBank" width={1000} height={120} className="full-top-banner" priority={true} />
+                    <Image src="/accessbank-banner.webp" alt="AccessBank" width={1000} height={120} className="full-top-banner" />
                 </div>
 
                 {/* Lower Grid: 3 Posts */}
@@ -84,7 +84,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
             {/* Right Ads */}
             <aside className="side-ads right">
                 <div className="ads-box placeholder-ads">
-                    <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} priority={true} />
+                    <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             </aside>
         </section>
