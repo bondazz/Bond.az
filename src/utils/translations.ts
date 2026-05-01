@@ -33,7 +33,10 @@ export const translations = {
         terms: "İstifadə şərtləri",
         privacy: "Məxfilik siyasəti",
         madeWith: "Sevgi ilə hazırlandı",
-                categories: {
+        loading: "Yüklənir...",
+        allLoaded: "Bütün xəbərlər yükləndi.",
+        ogImage: "https://bond.az/og-image.jpg",
+        categories: {
             dunya: { name: "Dünya", desc: "Qlobal hadisələr, beynəlxalq münasibətlər və dünyada baş verən ən son yeniliklər." },
             siyaset: { name: "Siyasət", desc: "Azərbaycan və dünya siyasətindəki ən mühüm qərarlar, diplomatik görüşlər və təhlillər." },
             daxili: { name: "Daxili", desc: "Ölkə daxilində baş verən ən mühüm hadisələr, dövlət əhəmiyyətli qərarlar və daxili xəbərlər." },
