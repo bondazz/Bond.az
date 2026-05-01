@@ -2,8 +2,8 @@ import { exec } from 'child_process';
 import { NextResponse } from 'next/server';
 import path from 'path';
 
-export async function POST() {
-    return new Promise((resolve) => {
+export async function POST(): Promise<NextResponse> {
+    return await new Promise<NextResponse>((resolve) => {
         console.log('--- Triggering News Bot from Admin Panel ---');
         
         // Use tsx to run the script
