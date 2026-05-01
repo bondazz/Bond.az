@@ -91,7 +91,11 @@ async function getPostsByAuthor(authorId: number, lang: string) {
         author: p.authors?.name || p.author,
         authorAvatar: p.authors?.avatar,
         authorJobTitle: p.authors?.job_title,
-        authorSlug: p.authors?.slug
+        authorSlug: p.authors?.slug,
+        likes: p.likes || 0,
+        dislikes: p.dislikes || 0,
+        views: p.views || 0,
+        commonId: p.commonId || null
     }));
 }
 
