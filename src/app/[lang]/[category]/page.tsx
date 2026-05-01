@@ -1,22 +1,27 @@
 import React from 'react';
-import { posts } from '@/data/posts';
 import { translations, Locale } from '@/utils/translations';
-import Link from 'next/link';
 import { Metadata } from 'next';
 import Image from 'next/image';
+import InfiniteScroll from '@/components/InfiniteScroll';
+import { getPosts } from '@/utils/postFetcher';
+import '@/components/HeroSection.css';
+import Script from 'next/script';
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string, category: string }> }): Promise<Metadata> {
     const { lang, category } = await params;
+    const t = translations[lang as Locale] || translations.az;
     const siteUrl = "https://bond.az";
     const currentUrl = lang === 'az' ? `${siteUrl}/${category}` : `${siteUrl}/${lang}/${category}`;
 
-    const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+    const catInfo = (t.categories as any)?.[category] || { name: category.charAt(0).toUpperCase() + category.slice(1), desc: "" };
+    const categoryName = catInfo.name;
+    const categoryDesc = catInfo.desc || `${categoryName} xəbərləri və ən son məlumatlar Bond.az saytında.`;
 
     return {
-        title: `${categoryName} - Bond.az`,
-        description: `${categoryName} xəbərləri və ən son məlumatlar Bond.az saytında.`,
+        title: `${categoryName} - Son Xəbərlər və Analizlər | Bond.az`,
+        description: categoryDesc,
         alternates: {
             canonical: currentUrl,
             languages: {
@@ -27,58 +32,86 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         },
         openGraph: {
             title: `${categoryName} - Bond.az`,
-            description: `${categoryName} xəbərləri - Bond.az`,
+            description: categoryDesc,
             url: currentUrl,
             type: 'website',
+            images: ['/bond_brand.webp'],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            images: ['/bond_brand.webp'],
         }
     };
 }
-
-import { getPosts } from '@/utils/postFetcher';
 
 export default async function CategoryPage({ params }: { params: Promise<{ lang: string, category: string }> }) {
     const { lang, category } = await params;
     const t = translations[lang as Locale] || translations.az;
     const categoryPosts = await getPosts(lang, category);
 
-    const getLocalizedPath = (path: string) => {
-        if (lang === 'az') return path;
-        return `/${lang}${path === '/' ? '' : path}`;
+    const catInfo = (t.categories as any)?.[category] || { name: category.charAt(0).toUpperCase() + category.slice(1), desc: "" };
+
+    // Schema for Category Page
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": `${catInfo.name} - Bond.az`,
+        "description": catInfo.desc,
+        "url": lang === 'az' ? `https://bond.az/${category}` : `https://bond.az/${lang}/${category}`,
+        "publisher": {
+            "@type": "Organization",
+            "name": "Bond.az",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://bond.az/bond_logo_black.webp"
+            }
+        }
     };
 
     return (
-        <main className="category-page max-w-7xl mx-auto px-6 py-12">
-            <h1 className="text-3xl font-black uppercase mb-10 border-b-4 border-red-600 inline-block pb-2">
-                {category} {lang === 'az' ? 'Xəbərləri' : lang === 'ru' ? 'Новости' : 'News'}
-            </h1>
+        <main>
+            <Script
+                id="category-schema"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            />
+            <section className="hero-container" style={{ paddingTop: '40px' }}>
+                {/* Left Ads */}
+                <aside className="side-ads left">
+                    <div className="ads-box placeholder-ads">
+                        <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                </aside>
 
-            <div className="posts-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {categoryPosts.map(post => (
-                    <Link key={post.id} href={getLocalizedPath(`/${post.categorySlug}/${post.slug}`)} className="group">
-                        <div className="relative overflow-hidden rounded-2xl aspect-[16/10] mb-5">
-                            <Image
-                                src={post.image || 'https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev/azerbaycanda-yeni-qaydalar-quvveye-mindi.webp'}
-                                alt={post.title}
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
+                <div className="hero-mid-wrapper">
+                    <div className="category-header-premium" style={{ marginBottom: '40px', borderBottom: '2px solid var(--card-border)', paddingBottom: '30px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
+                            <div style={{ width: '4px', height: '40px', backgroundColor: 'var(--accent-color)' }}></div>
+                            <h1 style={{ fontSize: '42px', fontWeight: '900', textTransform: 'uppercase', margin: 0, letterSpacing: '-1.5px' }}>
+                                {catInfo.name}
+                            </h1>
                         </div>
-                        <h2 className="text-xl font-bold leading-tight group-hover:text-red-600 transition-colors">
-                            {post.title}
-                        </h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm mt-3 line-clamp-2">
-                            {post.summary}
+                        <p style={{ fontSize: '18px', color: 'var(--meta-text)', maxWidth: '800px', lineHeight: '1.6', margin: '0 0 0 20px' }}>
+                            {catInfo.desc}
                         </p>
-                    </Link>
-                ))}
-            </div>
+                    </div>
+                    
+                    <InfiniteScroll initialPosts={categoryPosts} lang={lang} categorySlug={category} />
 
-            {categoryPosts.length === 0 && (
-                <div className="py-20 text-center text-slate-500">
-                    <p>{t.noPosts}</p>
+                    {categoryPosts.length === 0 && (
+                        <div className="py-20 text-center text-slate-500">
+                            <p>{t.noPosts}</p>
+                        </div>
+                    )}
                 </div>
-            )}
+
+                {/* Right Ads */}
+                <aside className="side-ads right">
+                    <div className="ads-box placeholder-ads">
+                        <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                </aside>
+            </section>
         </main>
     );
 }

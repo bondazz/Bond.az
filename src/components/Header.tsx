@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import logoBlack from '../../public/bond_logo_black.webp';
+import logoWhite from '../../public/bond_logo_white.webp';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { translations, Locale } from '@/utils/translations';
@@ -119,8 +122,14 @@ const Header = () => {
           </button>
 
           <a href={getLocalizedPath("/")} className="logo-area" aria-label="Bond.az Logo - Home">
-            <span className="logo-icon">///</span>
-            <span className="logo-text">bond.az</span>
+            <Image 
+              src={mounted && resolvedTheme === 'dark' ? logoWhite : logoBlack} 
+              alt="Bond.az Logo" 
+              width={200} 
+              height={55} 
+              className="site-logo-img"
+              priority
+            />
           </a>
           <nav className="desktop-nav">
             <ul className="main-nav-links">

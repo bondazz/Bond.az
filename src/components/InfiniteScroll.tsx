@@ -10,9 +10,10 @@ interface InfiniteScrollProps {
     initialPosts: Post[];
     lang: string;
     categorySlug?: string;
+    isSmall?: boolean;
 }
 
-const InfiniteScroll = ({ initialPosts, lang, categorySlug }: InfiniteScrollProps) => {
+const InfiniteScroll = ({ initialPosts, lang, categorySlug, isSmall = false }: InfiniteScrollProps) => {
     const t = translations[lang as Locale] || translations.az;
     const [posts, setPosts] = useState<Post[]>(initialPosts);
     const [page, setPage] = useState(2); 
@@ -70,7 +71,7 @@ const InfiniteScroll = ({ initialPosts, lang, categorySlug }: InfiniteScrollProp
         <>
             <div className="latest-posts-grid">
                 {posts.map(post => (
-                    <PostCard key={post.id} post={post} lang={lang} />
+                    <PostCard key={post.id} post={post} lang={lang} isSmall={isSmall} />
                 ))}
             </div>
 

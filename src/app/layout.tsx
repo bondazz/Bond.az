@@ -25,6 +25,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "bond.az",
   description: "News Website",
+  openGraph: {
+    images: ['/bond_brand.webp'],
+  },
+  twitter: {
+    images: ['/bond_brand.webp'],
+  }
 };
 
 export default async function RootLayout({
@@ -38,16 +44,6 @@ export default async function RootLayout({
   return (
     <html lang={lang} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} h-full antialiased`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `
-            (function() {
-              try {
-                var savedTheme = localStorage.getItem('theme');
-                if (savedTheme === 'light') {
-                  document.documentElement.classList.add('light-mode');
-                }
-              } catch (e) {}
-            })();
-          ` }} />
       </head>
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} value={{ light: 'light-mode', dark: 'dark' }}>

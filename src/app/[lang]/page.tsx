@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       type: 'website',
       images: [
         {
-          url: '/og-logo.png', // Ensure this exists in public/
+          url: '/bond_brand.webp',
           width: 1200,
           height: 630,
           alt: 'Bond.az News',
@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       card: 'summary_large_image',
       title: titles[lang] || titles.az,
       description: descriptions[lang] || descriptions.az,
-      images: ['/og-logo.png'],
+      images: ['/bond_brand.webp'],
     },
     robots: {
       index: true,
@@ -84,7 +84,7 @@ export default async function LangHomePage({ params }: { params: Promise<{ lang:
     "@type": "NewsMediaOrganization",
     "name": "Bond.az",
     "url": siteUrl,
-    "logo": `${siteUrl}/assets/img/logo.svg`,
+    "logo": `${siteUrl}/bond_logo_black.webp`,
     "sameAs": [
       "https://facebook.com/bondaz",
       "https://instagram.com/bondaz",

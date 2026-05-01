@@ -54,11 +54,12 @@ async function rewriteWithAI(title: string, content: string) {
 }
 
 async function generateImageWithOpenAI(title: string) {
-    console.log(`--- Generating AI Image with GPT Image 2 (ULTRA LOW COST: $0.005) for: ${title} ---`);
-    const prompt = `Create a single wheatpaste-style poster image based on the following news headline: "{${title}}" 
+    console.log(`--- Generating AI Image with GPT Image 2 (ULTRA LOW COST: $0.0005) for: ${title} ---`);
+    const prompt = `Create a mixed-media poster based on the following news headline: "{${title}}" 
     Requirements: 
-    - Style: Wheatpaste street poster aesthetic, urban wall background, realistic paper texture, slightly distressed, torn edges.
-    - Visual concept: Symbolic representation of the news content, strong central focus.
+    - Style: A mix of Wheatpaste and cut-out Collage art.
+    - Visual concept: Artistic representation of the news content using paper collage elements pasted on a textured urban wall.
+    - Elements: Realistic paper textures, distressed/torn edges, overlapping collage cut-outs.
     - No text, no typography, no logos.
     - Colors: Limited palette (red, black, off-white), slightly gritty.
     - Lighting: Soft cinematic lighting.`;
@@ -71,13 +72,13 @@ async function generateImageWithOpenAI(title: string) {
             size: "1536x1024",
             quality: "low"
         }, {
-            headers: { 
+            headers: {
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
                 'OpenAI-Organization': process.env.OPENAI_ORG_ID,
                 'Content-Type': 'application/json'
             }
         });
-        
+
         // Debugging the new model's response structure
         if (response.data && response.data.data && response.data.data[0]) {
             const imageUrl = response.data.data[0].url || response.data.data[0].b64_json;
@@ -127,7 +128,7 @@ function slugifyTitle(title: string) {
 async function uploadImageToR2(imageData: string | null, title: string) {
     try {
         if (!imageData) return null;
-        
+
         let originalBuffer: Buffer;
 
         if (imageData.startsWith('http')) {
@@ -200,7 +201,7 @@ async function fetchWithViewSource(url: string) {
 async function runNewsBot(count = 2) {
     console.log(`--- BOND AI BOT: STARTING (Target: ${count} posts) ---`);
     console.time("Total Action Time");
-    
+
     const feed = await parser.parseURL('https://oxu.az/feed');
     let processedCount = 0;
 
@@ -211,7 +212,7 @@ async function runNewsBot(count = 2) {
         if (exists && exists.length > 0) continue;
 
         console.log(`\n[${processedCount + 1}/${count}] Processing: ${item.title}`);
-        
+
         try {
             const source = await fetchWithViewSource(item.link!);
             if (!source || !source.text) continue;
@@ -225,7 +226,7 @@ async function runNewsBot(count = 2) {
 
             const translations = await Promise.all(['az', 'en', 'ru'].map(async (lang) => {
                 const post = aiResult[lang];
-                
+
                 const { data: catData } = await supabase
                     .from('categories')
                     .select('name, slug')
@@ -238,8 +239,8 @@ async function runNewsBot(count = 2) {
                     .from('authors')
                     .select('id, name')
                     .eq('lang', lang);
-                
-                const selectedAuthor = randomAuthors && randomAuthors.length > 0 
+
+                const selectedAuthor = randomAuthors && randomAuthors.length > 0
                     ? randomAuthors[Math.floor(Math.random() * randomAuthors.length)]
                     : { id: null, name: "Admin" };
 
@@ -247,7 +248,7 @@ async function runNewsBot(count = 2) {
                     common_id: item.guid,
                     lang: lang,
                     title: post.title,
-                    slug: post.slug,
+                    slug: slugifyTitle(post.title),
                     category: catData?.name || source.category.name,
                     category_slug: catData?.slug || source.category.slug,
                     image: myImageUrl,
@@ -277,4 +278,4 @@ async function runNewsBot(count = 2) {
     if (processedCount === 0) console.log("Yeni xəbər tapılmadı.");
 }
 
-runNewsBot();
+runNewsBot(2);

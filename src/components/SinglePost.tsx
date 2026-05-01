@@ -45,13 +45,27 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
                             <div className="smeta-sec">
                                 <div className="p-meta">
                                     <div className="meta-inner is-meta">
-                                        <a className="meta-el meta-avatar" href="#">
-                                            <img width="32" height="32" src="https://foxiz.io/capital/wp-content/uploads/sites/8/2026/04/avatar-150x150.jpg" className="photo avatar" alt="" />
-                                        </a>
+                                        <Link className="meta-el meta-avatar" href={lang === 'az' ? `/author/${post.authorSlug || 'admin'}` : `/${lang}/author/${post.authorSlug || 'admin'}`}>
+                                            <div 
+                                                className="small-brush-container"
+                                                style={{
+                                                    width: '32px',
+                                                    height: '32px',
+                                                    maskImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='f'%3E%3CfeGaussianBlur stdDeviation='3'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23f)'%3E%3Cpath fill='%23000' d='M10,10 L190,15 L185,190 L15,185 Z M10,10 C30,5 60,15 90,10 C120,5 150,15 190,10 C185,40 195,70 190,100 C195,130 185,160 190,190 C160,185 130,195 100,190 C70,195 40,185 15,190 C20,160 10,130 15,100 C10,70 20,40 10,10' /%3E%3Cpath fill='%23000' d='M5,20 L15,15 L25,25 L35,10 L50,20 L70,5 L90,25 L110,10 L130,30 L150,5 L170,25 L190,10 L195,40 L185,60 L198,80 L188,110 L195,140 L182,170 L192,195 L160,188 L130,198 L100,185 L70,195 L40,182 L15,195 L5,160 L18,130 L8,100 L15,70 L5,40 Z' /%3E%3C/g%3E%3C/svg%3E")`,
+                                                    WebkitMaskImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='f'%3E%3CfeGaussianBlur stdDeviation='3'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23f)'%3E%3Cpath fill='%23000' d='M10,10 L190,15 L185,190 L15,185 Z M10,10 C30,5 60,15 90,10 C120,5 150,15 190,10 C185,40 195,70 190,100 C195,130 185,160 190,190 C160,185 130,195 100,190 C70,195 40,185 15,190 C20,160 10,130 15,100 C10,70 20,40 10,10' /%3E%3Cpath fill='%23000' d='M5,20 L15,15 L25,25 L35,10 L50,20 L70,5 L90,25 L110,10 L130,30 L150,5 L170,25 L190,10 L195,40 L185,60 L198,80 L188,110 L195,140 L182,170 L192,195 L160,188 L130,198 L100,185 L70,195 L40,182 L15,195 L5,160 L18,130 L8,100 L15,70 L5,40 Z' /%3E%3C/g%3E%3C/svg%3E")`,
+                                                    maskSize: 'contain',
+                                                    WebkitMaskSize: 'contain',
+                                                    maskRepeat: 'no-repeat',
+                                                    WebkitMaskRepeat: 'no-repeat'
+                                                }}
+                                            >
+                                                <img width="32" height="32" src={post.authorAvatar || "/placeholder-user.png"} className="photo avatar" alt={post.author} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            </div>
+                                        </Link>
                                         <div className="meta-el">
                                             <div className="ulightbox-holder">
-                                                <a className="meta-author" href="#">{post.author || "Admin"}</a>
-                                                <span className="meta-label meta-job">- Senior Editor</span>
+                                                <Link className="meta-author" href={lang === 'az' ? `/author/${post.authorSlug || 'admin'}` : `/${lang}/author/${post.authorSlug || 'admin'}`}>{post.author || "Admin"}</Link>
+                                                <span className="meta-label meta-job">- {post.authorJobTitle || "Redaktor"}</span>
                                             </div>
                                         </div>
                                     </div>

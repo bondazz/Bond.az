@@ -42,3 +42,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    // Ümumi xəbər sayı
+    const { count: totalPosts } = await supabase
+      .from('posts')
+      .select('*', { count: 'exact', head: true });
+
+    // Ümumi baxış sayı
+    const { data: viewsData } = await supabase
+      .from('posts')
+      .select('views');
+    
+    const totalViews = viewsData?.reduce((acc, curr) => acc + (curr.views || 0), 0) || 0;
+
+    // Kateqoriya sayı
+    const { count: categories } = await supabase
+      .from('categories')
+      .select('*', { count: 'exact', head: true });
+
+    return NextResponse.json({
+      totalPosts: totalPosts || 0,
+      totalViews,
+      categories: categories || 0
+    });
+  } catch (err) {
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}

@@ -47,8 +47,17 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
                 </div>
 
                 {/* Banner Moved Here */}
-                <div className="top-banner-wrapper" style={{ marginBottom: '25px' }}>
-                    <Image src="/accessbank-banner.webp" alt="AccessBank" width={1000} height={120} className="full-top-banner" />
+                <div className="top-banner-wrapper" style={{ marginBottom: '25px', width: '100%', minHeight: '90px', backgroundColor: 'transparent', display: 'flex', justifyContent: 'center' }}>
+                    <iframe 
+                        src="https://ads.newmedia.az/www/images/8747db0639abf487b28f4635d8221f0a/index.html?clickTag=https://ads2.newmedia.az/www/delivery/ck.php?oaparams=2__bannerid=16323__zoneid=1290__cb=4875a1fc00__campaignid=3015801__p1=1777443017__p2=a6069974da3f8b869f1a0c92940a__p3=492642.e1e37f0d2d132adc5778274e5e15fabf4a26ee3d__oadest=https%3A%2F%2Fbit.ly%2F46qRBeX%3Futm_content%3DNewmedia%26utm_source%3Doxu.az%26utm_medium%3Diab_banner%26utm_campaign%3DBond.az_invest%26utm_device%3Ddesktop"
+                        width="970"
+                        height="90"
+                        style={{ border: 'none', maxWidth: '100%' }}
+                        scrolling="no"
+                        title="Bond Invest Advertisement"
+                        loading="lazy"
+                        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                    />
                 </div>
 
                 {/* Lower Grid: 3 Posts */}

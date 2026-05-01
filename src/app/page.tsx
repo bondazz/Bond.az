@@ -24,7 +24,7 @@ export const metadata: Metadata = {
         type: 'website',
         images: [
             {
-                url: '/og-image.png',
+                url: '/bond_brand.webp',
                 width: 1200,
                 height: 630,
                 alt: 'Bond.az News',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
         creator: '@bondxeber',
         title: "Bond.az - Ən Son Xəbərlər",
         description: "Azərbaycan və dünyada baş verən ən son hadisələr Bond.az-da.",
-        images: ['/og-image.png'],
+        images: ['/bond_brand.webp'],
     },
     robots: {
         index: true,

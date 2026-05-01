@@ -3,6 +3,10 @@ import SinglePost from '@/components/SinglePost';
 import { getPostBySlug, getPosts, getRelatedPostsByCommonId } from '@/utils/postFetcher';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
+import InfiniteScroll from '@/components/InfiniteScroll';
+import { translations, Locale } from '@/utils/translations';
+import Image from 'next/image';
+import '@/components/HeroSection.css'; // Reuse some layout styles
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string, category: string, slug: string }> }): Promise<Metadata> {
     const { lang, category, slug } = await params;
@@ -86,9 +90,76 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
         notFound();
     }
 
+    const t = translations[lang as Locale] || translations.az;
+    const allPosts = await getPosts(lang, undefined, 1, 15);
+    const initialMorePosts = allPosts.filter(p => p.slug !== slug).slice(0, 10);
+
     return (
         <main>
-            <SinglePost post={post} />
+            <section className="hero-container">
+                {/* Left Ads */}
+                <aside className="side-ads left">
+                    <div className="ads-box placeholder-ads">
+                        <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                </aside>
+
+                <div className="hero-mid-wrapper">
+                    <SinglePost post={post} />
+                    
+                    {/* SEO: NewsArticle Schema */}
+                    <script
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{
+                            __html: JSON.stringify({
+                                "@context": "https://schema.org",
+                                "@type": "NewsArticle",
+                                "headline": post.title,
+                                "image": [post.image],
+                                "datePublished": post.date,
+                                "dateModified": post.date,
+                                "author": [{
+                                    "@type": "Person",
+                                    "name": post.author,
+                                    "url": `https://bond.az/author/${post.authorSlug}`
+                                }],
+                                "publisher": {
+                                    "@type": "NewsMediaOrganization",
+                                    "name": "Bond.az",
+                                    "logo": {
+                                        "@type": "ImageObject",
+                                        "url": "https://bond.az/logo.png",
+                                        "width": 600,
+                                        "height": 60
+                                    }
+                                },
+                                "description": post.summary,
+                                "mainEntityOfPage": {
+                                    "@type": "WebPage",
+                                    "@id": `https://bond.az/${lang}/${category}/${slug}`
+                                },
+                                "isAccessibleForFree": "http://schema.org/True"
+                            })
+                        }}
+                    />
+
+                    <div className="latest-news-section" style={{ marginTop: '60px' }}>
+                        <div className="section-header">
+                            <h2 className="section-title">
+                                {lang === 'az' ? 'Ən Son Xəbərlər' : lang === 'ru' ? 'Последние новости' : 'Latest News'}
+                            </h2>
+                        </div>
+                        <InfiniteScroll initialPosts={initialMorePosts} lang={lang} isSmall={true} />
+                    </div>
+                </div>
+
+                {/* Right Ads */}
+                <aside className="side-ads right">
+                    <div className="ads-box placeholder-ads">
+                        <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                </aside>
+            </section>
         </main>
     );
 }

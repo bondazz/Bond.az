@@ -8,19 +8,17 @@ export async function getPosts(lang?: string, categorySlug?: string, page: numbe
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
-    let url = `${supabaseUrl}/rest/v1/posts?select=id,common_id,lang,title,category,category_slug,slug,image,summary,likes,dislikes,views,date,author,audio_url&order=id.desc&offset=${offset}&limit=${limit}`;
+    let url = `${supabaseUrl}/rest/v1/posts?select=id,common_id,lang,title,category,category_slug,slug,image,summary,likes,dislikes,views,date,author,audio_url,authors(name,avatar,job_title,slug)&order=id.desc&offset=${offset}&limit=${limit}`;
     if (lang) url += `&lang=eq.${lang}`;
     if (categorySlug) url += `&category_slug=eq.${categorySlug}`;
 
-    console.time('supabase-query');
     const response = await fetch(url, {
         headers: {
             'apikey': anonKey!,
             'Authorization': `Bearer ${anonKey!}`
         },
-        next: { revalidate: 60 } // Aggressively cache for 60 seconds
+        cache: 'no-store'
     });
-    console.timeEnd('supabase-query');
 
     if (!response.ok) {
         console.error('Error fetching posts:', await response.text());
@@ -29,7 +27,6 @@ export async function getPosts(lang?: string, categorySlug?: string, page: numbe
     
     const data = await response.json();
 
-    // Map DB underscore_case to JS camelCase
     return data.map((p: any) => ({
         id: p.id,
         commonId: p.common_id,
@@ -44,22 +41,50 @@ export async function getPosts(lang?: string, categorySlug?: string, page: numbe
         dislikes: p.dislikes,
         views: p.views,
         date: p.date,
-        author: p.author,
+        author: p.authors?.name || p.author,
+        authorAvatar: p.authors?.avatar,
+        authorJobTitle: p.authors?.job_title,
+        authorId: p.author_id,
+        authorSlug: p.authors?.slug,
         audio_url: p.audio_url
     })) as Post[];
 }
 
 export async function getPostBySlug(slug: string, lang: string) {
-    const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .eq('slug', slug)
-        .eq('lang', lang)
-        .single();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    const url = `${supabaseUrl}/rest/v1/posts?select=*,authors(name,avatar,job_title,slug)&slug=eq.${slug}&lang=eq.${lang}&limit=1`;
+    
+    const response = await fetch(url, {
+        headers: {
+            'apikey': anonKey!,
+            'Authorization': `Bearer ${anonKey!}`,
+            'Accept': 'application/vnd.pgrst.object+json'
+        },
+        cache: 'no-store'
+    });
 
-    if (error || !data) {
-        console.error('Error fetching post:', error);
-        return null;
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    if (!data) return null;
+
+    // FAIL-SAFE: If join failed but author_id exists, fetch author separately
+    let authorDetails = data.authors;
+    if (!authorDetails && data.author_id) {
+        const authUrl = `${supabaseUrl}/rest/v1/authors?select=name,avatar,job_title,slug&id=eq.${data.author_id}&limit=1`;
+        const authRes = await fetch(authUrl, {
+            headers: {
+                'apikey': anonKey!,
+                'Authorization': `Bearer ${anonKey!}`,
+                'Accept': 'application/vnd.pgrst.object+json'
+            },
+            cache: 'no-store'
+        });
+        if (authRes.ok) {
+            authorDetails = await authRes.json();
+        }
     }
 
     return {
@@ -77,7 +102,11 @@ export async function getPostBySlug(slug: string, lang: string) {
         dislikes: data.dislikes,
         views: data.views,
         date: data.date,
-        author: data.author,
+        author: authorDetails?.name || data.author,
+        authorAvatar: authorDetails?.avatar,
+        authorJobTitle: authorDetails?.job_title,
+        authorId: data.author_id,
+        authorSlug: authorDetails?.slug,
         audio_url: data.audio_url
     } as Post;
 }
