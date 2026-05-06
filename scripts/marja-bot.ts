@@ -169,7 +169,7 @@ async function processAndUploadImage(imageData: string | null, title: string) {
         return publicUrl;
     } catch (err: any) {
         console.error('--- processAndUploadImage ERROR ---');
-        console.error('URL:', url);
+        console.error('Data:', imageData?.substring(0, 100));
         console.error('Message:', err.message);
         return null;
     }
