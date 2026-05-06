@@ -53,7 +53,7 @@ const Header = ({ initialLang, initialPosts = [] }: HeaderProps) => {
       try {
         const { data, error } = await supabase
           .from('posts')
-          .select('id, title, slug, category_slug, image, date')
+          .select('id, title, slug, categorySlug:category_slug, image, date')
           .eq('lang', lang)
           .ilike('title', `%${searchQuery}%`)
           .order('id', { ascending: false })
@@ -241,7 +241,7 @@ const Header = ({ initialLang, initialPosts = [] }: HeaderProps) => {
                         {searchResults.map(post => (
                           <a 
                             key={post.id} 
-                            href={getLocalizedPath(`/${post.category_slug}/${post.slug}`)}
+                            href={getLocalizedPath(`/${post.categorySlug}/${post.slug}`)}
                             className="search-result-item"
                           >
                             <div className="result-thumb">
