@@ -18,15 +18,18 @@ export const translations = {
         blog: "Bloq",
         signIn: "Daxil ol",
         personalize: "Fərdiləşdir",
+        authors: "Müəlliflərimiz",
+        noAuthorsFound: "Hələlik müəllif tapılmadı.",
+        breakingNews: "TƏCİLİ XƏBƏRLƏR",
         footerDesc: "Bond.az - Azərbaycan və dünyada baş verən güncəl xəbər axını.",
         allRights: "Bütün hüquqlar qorunur",
         switchToDark: "Qaranlıq rejimə keç",
         switchToLight: "İşıqlı rejimə keç",
         noPosts: "Bu kateqoriya üzrə hələlik xəbər yoxdur.",
-        by: "MÜƏLLİF",
+        by: "Müəllif:",
         saveIt: "SAXLA",
-        share: "PAYLAŞ",
-        lastUpdated: "SON YENİLƏNMƏ",
+        share: "Paylaş",
+        lastUpdated: "Son yenilənmə",
         about: "Haqqımızda",
         contact: "Əlaqə",
         ads: "Reklam",
@@ -35,6 +38,15 @@ export const translations = {
         madeWith: "Sevgi ilə hazırlandı",
         loading: "Yüklənir...",
         allLoaded: "Bütün xəbərlər yükləndi.",
+        imageAttribution: "Foto: Bond.az tərəfindən hazırlanmışdır",
+        followUs: "Bizi sosial şəbəkələrdə izləyin:",
+        currencies: "Məzənnələr",
+        currencyRates: "Valyuta Məzənnələri",
+        buy: "Alış",
+        sell: "Satış",
+        officialRate: "Rəsmi Məzənnə",
+        converter: "Konvertor",
+        joinFamily: "Bond.az ailəsinə qoşulun",
         ogImage: "https://bond.az/og-image.jpg",
         categories: {
             dunya: { name: "Dünya", desc: "Qlobal hadisələr, beynəlxalq münasibətlər və dünyada baş verən ən son yeniliklər." },
@@ -115,6 +127,53 @@ export const translations = {
                     { h: "4. Məsuliyyətin Məhdudlaşdırılması", p: "Bond.az xarici mənbələrə istinadən dərc olunan materialların məzmununa görə məsuliyyət daşımır." },
                     { h: "5. Şərtlərin Dəyişdirilməsi", p: "Sayt rəhbərliyi istənilən vaxt istifadə şərtlərini əvvəlcədən xəbərdarlıq etmədən dəyişmək hüququnu özündə saxlayır." }
                 ]
+            },
+            privacy: {
+                title: "Məxfilik Siyasəti — Bond.az Şəxsi Məlumatların Mühafizəsi",
+                shortTitle: "Məxfilik",
+                subtitle: "Sizin məlumatlarınızın təhlükəsizliyi bizim prioritetimizdir",
+                content: "Bu Məxfilik Siyasəti Xidmətdən istifadə edərkən məlumatlarınızın toplanması, istifadəsi və açıqlanması ilə bağlı Bizim siyasət və prosedurlarımızı təsvir edir.",
+                sections: [
+                    {
+                        h: "1. Şərh və Təriflər",
+                        p: "Böyük hərflə başlayan sözlər aşağıdakı şərtlərdə müəyyən edilmiş mənalara malikdir. Bu təriflər tək və ya cəm halında istifadə edilməsindən asılı olmayaraq eyni mənanı daşımalıdır."
+                    },
+                    {
+                        h: "2. Şəxsi Məlumatların Toplanması",
+                        p: "Xidmətimizdən istifadə edərkən Biz Sizdən şəxsiyyətinizi müəyyənləşdirməyə imkan verən müəyyən məlumatları (E-poçt, Ad, Soyad) təqdim etməyi xahiş edə bilərik."
+                    },
+                    {
+                        h: "3. İstifadə Məlumatları və Cookies",
+                        p: "İstifadə məlumatları Xidmətdən istifadə zamanı avtomatik olaraq toplanır (IP ünvanı, brauzer növü, səhifə baxışları). Biz həmçinin fəaliyyəti izləmək üçün Cookies texnologiyasından istifadə edirik."
+                    },
+                    {
+                        h: "4. Məlumatların İstifadə Məqsədləri",
+                        p: "Şirkət məlumatlarınızdan Xidməti saxlamaq, hesabınızı idarə etmək, Sizinlə əlaqə saxlamaq və xidmət keyfiyyətini təhlil etmək üçün istifadə edir."
+                    },
+                    {
+                        h: "5. Məlumatların Təhlükəsizliyi",
+                        p: "Şəxsi məlumatlarınızın təhlükəsizliyi Bizim üçün vacibdir, lakin internet vasitəsilə heç bir ötürmə üsulunun 100% təhlükəsiz olmadığını unutmayın."
+                    },
+                    {
+                        h: "6. Bizimlə Əlaqə",
+                        p: "Bu Məxfilik Siyasəti haqqında hər hansı sualınız varsa, editor@bond.az e-poçt ünvanı və ya +994 (12) 555 00 00 nömrəsi ilə bizimlə əlaqə saxlaya bilərsiniz."
+                    }
+                ],
+                fullText: `
+                    <p>Bu Məxfilik Siyasəti Xidmətdən istifadə edərkən məlumatlarınızın toplanması, istifadəsi və açıqlanması ilə bağlı Bizim siyasət və prosedurlarımızı təsvir edir, həmçinin məxfilik hüquqlarınız və qanunun sizi necə qoruduğu haqqında məlumat verir.</p>
+                    <p>Biz Sizin Şəxsi məlumatlarınızı Xidməti təqdim etmək və təkmilləşdirmək üçün istifadə edirik. Xidmətdən istifadə etməklə, Siz bu Məxfilik Siyasətinə uyğun olaraq məlumatların toplanması və istifadəsinə razılıq verirsiniz.</p>
+                    
+                    <h3>Təriflər</h3>
+                    <p><b>Şirkət:</b> Bond.az Media House, Bakı şəhəri, Azərbaycan prospekti 12 ünvanına aiddir.</p>
+                    <p><b>Cookies:</b> Veb-sayt tərəfindən cihazınıza yerləşdirilən kiçik fayllardır.</p>
+                    <p><b>Cihaz:</b> Xidmətə daxil ola bilən hər hansı bir cihazı (kompüter, mobil telefon) bildirir.</p>
+                    
+                    <h3>Şəxsi məlumatlarınızın toplanması</h3>
+                    <p>İstifadə məlumatları Xidmətdən istifadə zamanı avtomatik olaraq toplanır. Buraya Cihazınızın IP ünvanı, brauzer növü və ziyarət etdiyiniz səhifələr daxildir.</p>
+                    
+                    <h3>Məxfilik Siyasətindəki dəyişikliklər</h3>
+                    <p>Biz vaxtaşırı Məxfilik Siyasətimizi yeniləyə bilərik. Hər hansı dəyişiklik barədə Sizə bu səhifədə yeni Məxfilik Siyasətini yerləşdirməklə məlumat verəcəyik.</p>
+                `
             }
         }
     },
@@ -135,15 +194,18 @@ export const translations = {
         blog: "Blog",
         signIn: "Sign In",
         personalize: "Personalize",
+        authors: "Our Authors",
+        noAuthorsFound: "No authors found yet.",
+        breakingNews: "BREAKING NEWS",
         footerDesc: "Bond.az - Current news from Azerbaijan and the world.",
         allRights: "All rights reserved",
         switchToDark: "Switch to Dark Mode",
         switchToLight: "Switch to Light Mode",
         noPosts: "No posts found in this category.",
-        by: "BY",
+        by: "By",
         saveIt: "SAVE IT",
-        share: "SHARE",
-        lastUpdated: "LAST UPDATED",
+        share: "Share",
+        lastUpdated: "Last updated",
         about: "About Us",
         contact: "Contact",
         ads: "Advertising",
@@ -152,6 +214,15 @@ export const translations = {
         madeWith: "Made with love",
         loading: "Loading...",
         allLoaded: "All news loaded.",
+        imageAttribution: "Photo: Prepared by Bond.az",
+        followUs: "Follow us on social media:",
+        currencies: "Currencies",
+        currencyRates: "Exchange Rates",
+        buy: "Buy",
+        sell: "Sell",
+        officialRate: "Official Rate",
+        converter: "Converter",
+        joinFamily: "Join the Bond.az family",
         ogImage: "https://bond.az/og-image.jpg",
         categories: {
             world: { name: "World", desc: "Latest international news, global events and world updates." },
@@ -228,6 +299,18 @@ export const translations = {
                     { h: "4. Limitation of Liability", p: "Bond.az is not responsible for the content of materials published referencing external sources." },
                     { h: "5. Modification of Terms", p: "The site management reserves the right to change the terms of use at any time without prior notice." }
                 ]
+            },
+            privacy: {
+                title: "Privacy Policy — Bond.az Data Protection",
+                shortTitle: "Privacy",
+                subtitle: "Your data security is our priority",
+                content: "This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information.",
+                sections: [
+                    { h: "1. Definitions", p: "Words of which the initial letter is capitalized have meanings defined under the following conditions." },
+                    { h: "2. Data Collection", p: "While using Our Service, We may ask You to provide Us with certain personally identifiable information." },
+                    { h: "3. Usage Data", p: "Usage Data is collected automatically when using the Service." },
+                    { h: "4. Security", p: "The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet is 100% secure." }
+                ]
             }
         }
     },
@@ -248,15 +331,18 @@ export const translations = {
         blog: "Блог",
         signIn: "Войти",
         personalize: "Персонализация",
+        authors: "Наши авторы",
+        noAuthorsFound: "Авторы пока не найдены.",
+        breakingNews: "ГОРЯЧИЕ НОВОСТИ",
         footerDesc: "Bond.az - актуальные новости Азербайджана и мира.",
         allRights: "Все права защищены",
         switchToDark: "Темная тема",
         switchToLight: "Светлая тема",
         noPosts: "В этой категории пока нет новостей.",
-        by: "АВТОР",
+        by: "Автор:",
         saveIt: "СОХРАНИТЬ",
-        share: "ПОДЕЛИТЬСЯ",
-        lastUpdated: "ПОСЛЕДНЕЕ ОБНОВЛЕНИЕ",
+        share: "Поделиться",
+        lastUpdated: "Последнее обновление",
         about: "О нас",
         contact: "Контакты",
         ads: "Реклама",
@@ -265,6 +351,15 @@ export const translations = {
         madeWith: "Сделано с любовью",
         loading: "Загрузка...",
         allLoaded: "Все новости загружены.",
+        imageAttribution: "Фото: Подготовлено Bond.az",
+        followUs: "Следите за нами в социальных сетях:",
+        currencies: "Валюты",
+        currencyRates: "Курсы валют",
+        buy: "Покупка",
+        sell: "Продажа",
+        officialRate: "Официальный курс",
+        converter: "Конвертер",
+        joinFamily: "Присоединяйтесь к семье Bond.az",
         ogImage: "https://bond.az/og-image.jpg",
         categories: {
             world: { name: "Мир", desc: "Последние международные новости и события в мире." },
@@ -339,6 +434,18 @@ export const translations = {
                     { h: "3. Политика конфиденциальности", p: "Персональная информация, которую мы собираем при использовании вами сайта (IP-адрес, куки и т. д.), не передается третьим лицам." },
                     { h: "4. Ограничение ответственности", p: "Bond.az не несет ответственности за содержание материалов, опубликованных со ссылкой на внешние источники." },
                     { h: "5. Изменение условий", p: "Администрация сайта оставляет за собой право изменять условия использования в любое время без предварительного уведомления." }
+                ]
+            },
+            privacy: {
+                title: "Политика конфиденциальности — Защита данных Bond.az",
+                shortTitle: "Конфиденциальность",
+                subtitle: "Безопасность ваших данных - наш приоритет",
+                content: "Настоящая Политика конфиденциальности описывает наши правила и процедуры по сбору, использованию и раскрытию вашей информации.",
+                sections: [
+                    { h: "1. Определения", p: "Слова, начинающиеся с заглавной буквы, имеют значения, определенные при следующих условиях." },
+                    { h: "2. Сбор данных", p: "При использовании нашего Сервиса мы можем попросить вас предоставить нам определенную личную информацию." },
+                    { h: "3. Данные об использовании", p: "Данные об использовании собираются автоматически при использовании Сервиса." },
+                    { h: "4. Безопасность", p: "Безопасность ваших личных данных важна для нас, но помните, что ни один метод передачи через Интернет не является на 100% безопасным." }
                 ]
             }
         }

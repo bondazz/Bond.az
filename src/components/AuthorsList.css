@@ -1,0 +1,155 @@
+.authors-page-wrapper {
+    padding: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.authors-page-wrapper {
+    padding: 0;
+    width: 100%; /* Take full available width of the middle section */
+    max-width: 1000px; /* Aligned with standard site content width */
+    margin: 0 auto;
+}
+
+.authors-header-premium {
+    position: relative;
+    height: 240px; /* Further reduced */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: -100px; /* Even higher overlap */
+    z-index: 2;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.authors-hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, black 40%, transparent 100%);
+}
+
+.authors-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 10%, var(--background) 98%);
+    z-index: 1;
+}
+
+/* The Variable Blur Effect */
+.authors-hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    mask-image: linear-gradient(to bottom, transparent 10%, black 95%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 10%, black 95%);
+    z-index: 2;
+}
+
+.authors-title-premium {
+    font-size: 38px; /* Further reduced size */
+    font-weight: 950;
+    letter-spacing: -2px;
+    color: var(--foreground);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 10;
+    text-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    line-height: 0.9;
+    text-align: center;
+    margin-top: -60px; /* Moved up even more */
+}
+
+.authors-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px; /* Reduced gap */
+    padding: 0 10px 40px;
+    position: relative;
+    z-index: 20;
+}
+
+.author-list-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-top: 2px solid var(--card-border);
+    border-radius: 8px;
+    padding: 10px 15px; /* Slim vertical padding */
+    text-decoration: none;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.author-list-card:hover {
+    border-top-color: var(--accent-color);
+    background: var(--hover-bg);
+}
+
+.author-list-avatar {
+    position: relative;
+    width: 40px; /* Compact avatar */
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    z-index: 1;
+    border: 1.5px solid var(--card-border);
+}
+
+.author-list-info {
+    flex-grow: 1;
+    z-index: 1;
+}
+
+.author-list-name {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 0;
+    letter-spacing: -0.3px;
+    line-height: 1;
+}
+
+.author-list-job {
+    display: none; /* Removed as requested */
+}
+
+.author-list-arrow {
+    display: none; /* Hide arrow for ultra-compact look */
+}
+
+@media (max-width: 1100px) {
+    .authors-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .authors-title-premium {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .authors-header-premium {
+        height: 240px;
+    }
+    
+    .authors-title-premium {
+        font-size: 28px;
+        letter-spacing: -1px;
+    }
+}
+
+@media (max-width: 600px) {
+    .authors-list {
+        grid-template-columns: 1fr;
+    }
+}

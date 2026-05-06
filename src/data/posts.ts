@@ -19,6 +19,8 @@ export interface Post {
     lang: 'az' | 'en' | 'ru';
     commonId: string;
     audio_url?: string;
+    seo_title?: string;
+    h1?: string;
 }
 
 export const posts: Post[] = [

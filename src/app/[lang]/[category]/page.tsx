@@ -63,7 +63,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ lang:
             "name": "Bond.az",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://bond.az/bond_logo_black.webp"
+                "url": "https://bond.az/bond_logo_black.png"
             }
         }
     };
@@ -95,7 +95,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ lang:
                             {catInfo.desc}
                         </p>
                     </div>
-                    
+
                     <InfiniteScroll initialPosts={categoryPosts} lang={lang} categorySlug={category} />
 
                     {categoryPosts.length === 0 && (

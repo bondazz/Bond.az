@@ -12,54 +12,71 @@
     margin-bottom: 0;
 }
 
-/* Hero Section Refined */
-.static-hero {
-    background: #000;
-    /* Reduced padding since body already has padding-top: 130px */
-    padding: 60px 20px 80px;
+/* Hero Section Refined - Compact Editorial Style */
+.static-hero-premium {
+    position: relative;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     color: white;
-    position: relative;
     overflow: hidden;
-    margin-top: -20px; /* Slight tuck-under for visual cohesion */
+    margin-top: -20px;
+    margin-bottom: -150px;
 }
 
-.static-hero::before {
-    content: '';
+.static-hero-bg {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
-    background-size: 40px 40px;
+    inset: 0;
+    z-index: 0;
 }
 
-.hero-tag {
-    background: var(--accent-color);
-    color: white;
-    padding: 5px 15px;
-    font-size: 11px;
-    letter-spacing: 2px;
-    font-weight: 900;
-    border-radius: 4px;
-    margin-bottom: 25px;
-    display: inline-block;
+.static-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, var(--background) 95%);
+    z-index: 1;
 }
 
-.hero-title {
-    font-size: 64px;
-    font-weight: 900;
-    margin: 0 0 15px 0;
-    letter-spacing: -3px;
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    padding: 0 20px;
+    margin-top: -80px;
+}
+
+.hero-logo-wrapper {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-logo-img {
+    height: 35px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.hero-title-premium {
+    font-size: 42px;
+    font-weight: 950;
+    margin: 0 0 8px 0;
+    letter-spacing: -2px;
     text-transform: uppercase;
+    color: var(--foreground);
+    text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    line-height: 1;
 }
 
 .hero-subtitle {
-    font-size: 22px;
-    opacity: 0.6;
-    font-weight: 400;
-    max-width: 800px;
+    font-size: 16px;
+    opacity: 0.8;
+    font-weight: 500;
+    color: var(--foreground);
+    max-width: 600px;
     margin: 0 auto;
 }
 
@@ -72,30 +89,23 @@
     z-index: 2;
 }
 
-/* About Section V2 */
+/* About Section V2 - Editorial Refresh */
 .about-intro-section {
     background: var(--background);
     border: 1px solid var(--card-border);
-    padding: 50px;
-    border-radius: 24px;
-    margin-bottom: 50px;
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+    border-top: 3px solid var(--accent-color);
+    padding: 60px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.03);
 }
 
-.section-icon {
-    font-size: 48px;
-    background: var(--background);
-    width: 100px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    flex-shrink: 0;
-    border: 1px solid var(--card-border);
+.about-intro-section .lead-text {
+    font-size: 20px;
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .mv-card {
@@ -403,28 +413,139 @@
     line-height: 1.7;
 }
 
+/* Privacy Policy Refined Grid Layout */
+.privacy-rich-content {
+    margin-bottom: 60px;
+}
+
+.privacy-intro-lead {
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--foreground);
+    opacity: 0.8;
+    background: var(--background);
+    border: 1px solid var(--card-border);
+    padding: 40px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+.privacy-sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+}
+
+.privacy-section-card {
+    background: var(--background);
+    border: 1px solid var(--card-border);
+    padding: 40px;
+    border-radius: 16px;
+    transition: transform 0.3s ease;
+}
+
+.privacy-section-card:hover {
+    border-color: var(--accent-color);
+}
+
+.p-section-h {
+    font-size: 22px;
+    font-weight: 950;
+    margin-bottom: 20px;
+    color: var(--foreground);
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+.p-section-p {
+    font-size: 15px;
+    line-height: 1.7;
+    opacity: 0.7;
+    margin-bottom: 25px;
+}
+
+.p-section-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.p-section-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--card-border);
+    font-size: 14px;
+    color: var(--foreground);
+}
+
+.p-section-list li:last-child {
+    border-bottom: none;
+}
+
+.p-section-list b {
+    color: var(--accent-color);
+}
+
+.p-tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.p-tag {
+    background: rgba(var(--accent-rgb), 0.1);
+    color: var(--accent-color);
+    padding: 6px 15px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.p-sub-block {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--card-border);
+}
+
+.p-sub-block h4 {
+    font-size: 14px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    color: var(--foreground);
+}
+
+.p-sub-block p {
+    font-size: 13px;
+    opacity: 0.6;
+}
+
 @media (max-width: 1024px) {
+    .privacy-sections-grid {
+        grid-template-columns: 1fr;
+    }
     .contact-grid {
         grid-template-columns: 1fr;
     }
     .analytics-grid {
         grid-template-columns: 1fr 1fr;
     }
-    .hero-title {
-        font-size: 48px;
+    .hero-title-premium {
+        font-size: 38px;
     }
 }
 
 @media (max-width: 768px) {
+    .about-intro-section, .privacy-intro-lead, .privacy-section-card {
+        padding: 30px;
+    }
     .about-intro-section {
         flex-direction: column;
-        padding: 30px;
         text-align: center;
     }
     .info-block-grid {
         grid-template-columns: 1fr;
     }
-    .hero-title {
-        font-size: 36px;
+    .hero-title-premium {
+        font-size: 32px;
     }
 }

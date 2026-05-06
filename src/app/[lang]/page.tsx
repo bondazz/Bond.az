@@ -84,7 +84,7 @@ export default async function LangHomePage({ params }: { params: Promise<{ lang:
     "@type": "NewsMediaOrganization",
     "name": "Bond.az",
     "url": siteUrl,
-    "logo": `${siteUrl}/bond_logo_black.webp`,
+    "logo": `${siteUrl}/bond_logo_black.png`,
     "sameAs": [
       "https://facebook.com/bondaz",
       "https://instagram.com/bondaz",

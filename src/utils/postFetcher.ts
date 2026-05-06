@@ -128,3 +128,44 @@ export async function getRelatedPostsByCommonId(commonId: string) {
         slug: p.slug
     }));
 }
+
+export async function getPostsByTag(tag: string, lang: string, page: number = 1, limit: number = 30) {
+    const offset = (page - 1) * limit;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    // We search for the tag in both title and content using ILIKE
+    // Note: If you have a specific 'tags' column, use that instead.
+    const url = `${supabaseUrl}/rest/v1/posts?select=id,common_id,lang,title,category,category_slug,slug,image,summary,likes,dislikes,views,date,author,authors(name,avatar,job_title,slug)&lang=eq.${lang}&or=(title.ilike.*${tag}*,content.ilike.*${tag}*)&order=id.desc&offset=${offset}&limit=${limit}`;
+
+    const response = await fetch(url, {
+        headers: {
+            'apikey': anonKey!,
+            'Authorization': `Bearer ${anonKey!}`
+        },
+        cache: 'no-store'
+    });
+
+    if (!response.ok) return [];
+    const data = await response.json();
+
+    return data.map((p: any) => ({
+        id: p.id,
+        commonId: p.common_id,
+        lang: p.lang,
+        title: p.title,
+        category: p.category,
+        categorySlug: p.category_slug,
+        slug: p.slug,
+        image: p.image,
+        summary: p.summary,
+        likes: p.likes,
+        dislikes: p.dislikes,
+        views: p.views,
+        date: p.date,
+        author: p.authors?.name || p.author,
+        authorAvatar: p.authors?.avatar,
+        authorJobTitle: p.authors?.job_title,
+        authorSlug: p.authors?.slug,
+    })) as Post[];
+}

@@ -4,6 +4,9 @@ import { getPosts } from '@/utils/postFetcher';
 import PostCard from './PostCard';
 import InfiniteScroll from './InfiniteScroll';
 import Image from 'next/image';
+import Link from 'next/link';
+import AdSlot from './AdSlot';
+import SectionDivider from './SectionDivider';
 
 const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
     const lang = propLang || 'az';
@@ -18,9 +21,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
         <section className="hero-container">
             {/* Left Ads */}
             <aside className="side-ads left">
-                <div className="ads-box placeholder-ads">
-                    <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
+                <AdSlot slotId="sidebar_left" width={160} height={600} className="ads-box" />
             </aside>
 
             <div className="hero-mid-wrapper">
@@ -40,24 +41,15 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
 
                     <div className="mid-right-col">
                         <div className="top-ads-container">
-                            <Image src="/kontakt-ads.webp" alt="Kontakt Ad" width={300} height={250} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <AdSlot slotId="hero_square" width={300} height={300} />
                         </div>
                         {heroPosts[1] && <PostCard post={heroPosts[1]} isSmall={true} lang={lang} />}
                     </div>
                 </div>
 
                 {/* Banner Moved Here */}
-                <div className="top-banner-wrapper" style={{ marginBottom: '25px', width: '100%', minHeight: '90px', backgroundColor: 'transparent', display: 'flex', justifyContent: 'center' }}>
-                    <iframe 
-                        src="https://ads.newmedia.az/www/images/8747db0639abf487b28f4635d8221f0a/index.html?clickTag=https://ads2.newmedia.az/www/delivery/ck.php?oaparams=2__bannerid=16323__zoneid=1290__cb=4875a1fc00__campaignid=3015801__p1=1777443017__p2=a6069974da3f8b869f1a0c92940a__p3=492642.e1e37f0d2d132adc5778274e5e15fabf4a26ee3d__oadest=https%3A%2F%2Fbit.ly%2F46qRBeX%3Futm_content%3DNewmedia%26utm_source%3Doxu.az%26utm_medium%3Diab_banner%26utm_campaign%3DBond.az_invest%26utm_device%3Ddesktop"
-                        width="970"
-                        height="90"
-                        style={{ border: 'none', maxWidth: '100%' }}
-                        scrolling="no"
-                        title="Bond Invest Advertisement"
-                        loading="lazy"
-                        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                    />
+                <div className="top-banner-wrapper" style={{ marginBottom: '25px', width: '100%', minHeight: '90px', display: 'flex', justifyContent: 'center' }}>
+                    <AdSlot slotId="top_banner" width={970} height={90} />
                 </div>
 
                 {/* Lower Grid: 3 Posts */}
@@ -66,6 +58,9 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
                         <PostCard key={post.id} post={post} lang={lang} />
                     ))}
                 </div>
+
+                {/* Premium Divider Added Here */}
+                <SectionDivider />
 
                 {/* SECTION: LATEST NEWS + INFINITE SCROLL */}
                 <div className="latest-news-section">
@@ -92,9 +87,7 @@ const HeroSection = async ({ lang: propLang }: { lang?: string }) => {
 
             {/* Right Ads */}
             <aside className="side-ads right">
-                <div className="ads-box placeholder-ads">
-                    <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
+                <AdSlot slotId="sidebar_right" width={160} height={600} className="ads-box" />
             </aside>
         </section>
     );

@@ -1,0 +1,190 @@
+/* Theme-aware styles for Currencies page */
+
+.currencies-main-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    transition: background-color 0.4s ease;
+}
+
+.currencies-mirror-wrapper {
+    background: var(--card-bg);
+    border-radius: 12px;
+}
+
+.live-status-mirror {
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--meta-text);
+}
+
+html.light-mode .live-status-mirror {
+    background: rgba(0, 0, 0, 0.01);
+}
+
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.status-dot.active { background: #2ecc71; box-shadow: 0 0 10px rgba(46, 204, 113, 0.4); }
+.status-dot.refreshing { background: var(--accent-color); animation: blink 1s infinite; }
+
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+/* EXACT CBAR STYLES - Theme Aware */
+.table_table {
+    width: 100%;
+}
+
+.valuta_title {
+    display: flex;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--card-border);
+    padding: 12px 20px;
+    font-weight: 800;
+    font-size: 12px;
+    color: var(--meta-text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+html.light-mode .valuta_title {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.val_title { flex: 2; }
+.kod_title { flex: 1; text-align: center; }
+.kurs_title { flex: 1; text-align: right; }
+.dynam_title { width: 40px; }
+
+.table_row {
+    display: flex;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--card-border);
+    font-size: 14px;
+    align-items: center;
+    transition: background 0.2s;
+    color: var(--foreground);
+}
+
+.table_row:hover {
+    background: rgba(var(--accent-rgb), 0.05);
+}
+
+.valuta {
+    flex: 2;
+    font-weight: 600;
+}
+
+.kod {
+    flex: 1;
+    text-align: center;
+    color: var(--meta-text);
+    font-weight: 800;
+    font-size: 12px;
+}
+
+.kurs {
+    flex: 1;
+    text-align: right;
+    font-weight: 800;
+    font-family: 'Inter', sans-serif;
+    color: var(--foreground);
+}
+
+.dynamic {
+    width: 40px;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.dynamic svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Premium Disclaimer */
+.premium-disclaimer {
+    margin-top: 40px;
+    padding: 25px;
+    background: rgba(245, 158, 11, 0.05);
+    border-left: 4px solid #f59e0b;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #d97706;
+    line-height: 1.6;
+}
+
+html.light-mode .premium-disclaimer {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+/* SEO FOOTER STYLES */
+.currency-seo-footer {
+    margin-top: 60px;
+    padding: 40px;
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--card-border);
+    color: var(--meta-text);
+}
+
+.currency-seo-footer h2 {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--foreground);
+    margin-bottom: 25px;
+    letter-spacing: -1px;
+}
+
+.seo-rich-text {
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.seo-rich-text p {
+    margin-bottom: 20px;
+}
+
+.seo-rich-text a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.seo-rich-text a:hover {
+    text-decoration: underline;
+}
+
+.seo-sub-headers {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px dashed var(--card-border);
+}
+
+.seo-sub-headers h3 { font-size: 18px; font-weight: 800; color: var(--foreground); margin-bottom: 12px; }
+.seo-sub-headers h4 { font-size: 16px; font-weight: 700; color: var(--foreground); margin-bottom: 10px; opacity: 0.9; }
+.seo-sub-headers h5 { font-size: 14px; font-weight: 700; color: var(--meta-text); }
+
+
+.up { color: #2ecc71 !important; }
+.down { color: #e74c3c !important; }
+.stable { color: var(--meta-text) !important; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .currency-seo-footer {
+        padding: 25px;
+    }
+    .table_row {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+}

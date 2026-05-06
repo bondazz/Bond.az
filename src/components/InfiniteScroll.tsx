@@ -10,10 +10,11 @@ interface InfiniteScrollProps {
     initialPosts: Post[];
     lang: string;
     categorySlug?: string;
+    tag?: string;
     isSmall?: boolean;
 }
 
-const InfiniteScroll = ({ initialPosts, lang, categorySlug, isSmall = false }: InfiniteScrollProps) => {
+const InfiniteScroll = ({ initialPosts, lang, categorySlug, tag, isSmall = false }: InfiniteScrollProps) => {
     const t = translations[lang as Locale] || translations.az;
     const [posts, setPosts] = useState<Post[]>(initialPosts);
     const [page, setPage] = useState(2); 
@@ -47,7 +48,7 @@ const InfiniteScroll = ({ initialPosts, lang, categorySlug, isSmall = false }: I
         if (loading) return;
         setLoading(true);
         try {
-            const newPosts = await fetchMorePosts(lang, categorySlug, page);
+            const newPosts = await fetchMorePosts(lang, categorySlug, page, tag);
             
             if (newPosts.length === 0) {
                 setHasMore(false);

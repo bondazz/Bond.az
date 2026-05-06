@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'cdn.bond.az',
+      },
+      {
+        protocol: 'https',
         hostname: '**',
       },
     ],

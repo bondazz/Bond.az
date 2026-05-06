@@ -24,32 +24,52 @@ export async function POST(request: Request) {
         const buffer = Buffer.from(await file.arrayBuffer());
         const timestamp = Date.now();
         const originalName = file.name.split('.')[0].toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const isGif = file.type === 'image/gif' || file.name.endsWith('.gif');
         
-        // Şəkli həm AVIF, həm də WebP formatında hazırlaya bilərik. 
-        // Lakin yaddaş qənaəti üçün WebP (və ya istəyə uyğun AVIF) seçirik.
-        // User hər ikisini dəstəkləsin dediyi üçün biz WebP-ni (çox yayılmış) 
-        // və ya AVIF-i (daha modern) seçə bilərik. AVIF-ə üstünlük veririk.
+        const extension = isGif ? 'webp' : 'avif';
+        const fileName = `uploads/${type}/${originalName}-${timestamp}.${extension}`;
         
-        const fileName = `uploads/${type}/${originalName}-${timestamp}.avif`;
-        
-        const optimizedBuffer = await sharp(buffer)
-            .resize(400, 400, { fit: 'cover' })
-            .avif({ 
-                quality: 40, // Aqressiv sıxılma
-                effort: 9,   // Maksimum hesablama gücü ilə ən kiçik ölçü
-                chromaSubsampling: '4:2:0' 
-            })
-            .toBuffer();
+        let sharpInstance = sharp(buffer, { animated: isGif });
+
+        // Reklamlar üçün artıq kvadrata məcbur etmirik, 
+        // sadəcə çox böyükdürsə maksimal 1200px hündürlük/en limiti qoyuruq ki, 
+        // orijinal forması (uzunsov və ya kvadrat) pozulmasın.
+        if (type === 'ad') {
+            sharpInstance = sharpInstance.resize(800, 1200, { 
+                fit: 'inside', 
+                withoutEnlargement: true 
+            });
+        } else {
+            sharpInstance = sharpInstance.resize(400, 400, { fit: 'cover' });
+        }
+
+        let optimizedBuffer;
+        if (isGif) {
+            optimizedBuffer = await sharpInstance
+                .webp({ 
+                    animated: true,
+                    quality: 70,
+                    lossless: false
+                })
+                .toBuffer();
+        } else {
+            optimizedBuffer = await sharpInstance
+                .avif({ 
+                    quality: 60,
+                    effort: 9
+                })
+                .toBuffer();
+        }
 
         await s3Client.send(new PutObjectCommand({
             Bucket: 'bond',
             Key: fileName,
             Body: optimizedBuffer,
-            ContentType: 'image/avif',
+            ContentType: isGif ? 'image/webp' : 'image/avif',
             CacheControl: 'public, max-age=31536000, immutable'
         }));
 
-        const r2PublicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "https://pub-aa4d7ea2cdf4406aa95e778a75a12177.r2.dev";
+        const r2PublicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "https://cdn.bond.az";
         const publicUrl = `${r2PublicUrl}/${fileName}`;
 
         return NextResponse.json({ url: publicUrl });

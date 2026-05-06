@@ -6,6 +6,9 @@ import { Metadata } from 'next';
 import InfiniteScroll from '@/components/InfiniteScroll';
 import { translations, Locale } from '@/utils/translations';
 import Image from 'next/image';
+import Script from 'next/script';
+import AdSlot from '@/components/AdSlot';
+import SectionDivider from '@/components/SectionDivider';
 import '@/components/HeroSection.css'; // Reuse some layout styles
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string, category: string, slug: string }> }): Promise<Metadata> {
@@ -17,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     if (!post) return { title: 'Xəbər tapılmadı - Bond.az' };
 
     // Optimize title for Google (max 60-65 chars)
-    const seoTitle = post.title.length > 65 ? post.title.substring(0, 62) + "..." : post.title;
+    const seoTitle = post.seo_title || (post.title.length > 65 ? post.title.substring(0, 62) + "..." : `${post.title} | Bond.az`);
 
     const alternates: Record<string, string> = {};
     if (post.commonId) {
@@ -30,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     }
 
     return {
-        title: `${seoTitle} - Bond.az`,
+        title: seoTitle,
         description: post.summary.substring(0, 160),
         alternates: {
             canonical: currentUrl,
@@ -91,24 +94,24 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
     }
 
     const t = translations[lang as Locale] || translations.az;
-    const allPosts = await getPosts(lang, undefined, 1, 15);
-    const initialMorePosts = allPosts.filter(p => p.slug !== slug).slice(0, 10);
+    // Fetch posts strictly from the same category
+    const categoryPosts = await getPosts(lang, category, 1, 15);
+    const initialMorePosts = categoryPosts.filter(p => p.slug !== slug).slice(0, 12);
 
     return (
         <main>
             <section className="hero-container">
                 {/* Left Ads */}
                 <aside className="side-ads left">
-                    <div className="ads-box placeholder-ads">
-                        <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
+                    <AdSlot slotId="sidebar_left" width={160} height={600} className="ads-box" />
                 </aside>
 
                 <div className="hero-mid-wrapper">
                     <SinglePost post={post} />
-                    
+
                     {/* SEO: NewsArticle Schema */}
-                    <script
+                    <Script
+                        id="post-schema"
                         type="application/ld+json"
                         dangerouslySetInnerHTML={{
                             __html: JSON.stringify({
@@ -128,7 +131,7 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
                                     "name": "Bond.az",
                                     "logo": {
                                         "@type": "ImageObject",
-                                        "url": "https://bond.az/logo.png",
+                                        "url": "https://bond.az/bond_logo_black.png",
                                         "width": 600,
                                         "height": 60
                                     }
@@ -143,21 +146,48 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
                         }}
                     />
 
-                    <div className="latest-news-section" style={{ marginTop: '60px' }}>
-                        <div className="section-header">
-                            <h2 className="section-title">
-                                {lang === 'az' ? 'Ən Son Xəbərlər' : lang === 'ru' ? 'Последние новости' : 'Latest News'}
-                            </h2>
-                        </div>
-                        <InfiniteScroll initialPosts={initialMorePosts} lang={lang} isSmall={true} />
+                    {/* SEO: Breadcrumb Schema */}
+                    <Script
+                        id="breadcrumb-schema"
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{
+                            __html: JSON.stringify({
+                                "@context": "https://schema.org",
+                                "@type": "BreadcrumbList",
+                                "itemListElement": [
+                                    {
+                                        "@type": "ListItem",
+                                        "position": 1,
+                                        "name": t.home,
+                                        "item": `https://bond.az/${lang}`
+                                    },
+                                    {
+                                        "@type": "ListItem",
+                                        "position": 2,
+                                        "name": post.category,
+                                        "item": `https://bond.az/${lang}/${category}`
+                                    },
+                                    {
+                                        "@type": "ListItem",
+                                        "position": 3,
+                                        "name": post.title,
+                                        "item": `https://bond.az/${lang}/${category}/${slug}`
+                                    }
+                                ]
+                            })
+                        }}
+                    />
+
+                    <SectionDivider title={lang === 'az' ? 'Digər Xəbərlər' : lang === 'ru' ? 'Другие новости' : 'More News'} />
+
+                    <div className="latest-news-section" style={{ marginTop: '30px' }}>
+                        <InfiniteScroll initialPosts={initialMorePosts} lang={lang} categorySlug={category} isSmall={true} />
                     </div>
                 </div>
 
                 {/* Right Ads */}
                 <aside className="side-ads right">
-                    <div className="ads-box placeholder-ads">
-                        <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
+                    <AdSlot slotId="sidebar_right" width={160} height={600} className="ads-box" />
                 </aside>
             </section>
         </main>

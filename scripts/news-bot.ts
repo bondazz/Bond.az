@@ -23,17 +23,25 @@ async function rewriteWithAI(title: string, content: string) {
     ### ROLE: 
     Elite SEO Journalist and Creative Content Writer. 
     TASK: Rewrite the following news article into 3 languages: AZ, EN, RU.
-    CRITICAL: 
-    - The content MUST be 100% unique and pass all plagiarism checkers (Google, etc.). 
-    - The writing style MUST be 100% human-like (humanized) to bypass all AI content detectors and search engine filters.
-    - You MUST completely change the news title to something more engaging and SEO-friendly while maintaining the core meaning. 
-    - Do not simply translate; rewrite the entire narrative structure to be original.
-    
-    Format as JSON: { "az": { "title", "content", "slug", "seo_desc", "faqs": [{"question", "answer"}] }, "en": ..., "ru": ... }
-    STRICT: No headers, use <p> tags, 3-5 internal links <a href="/tag/keyword">, generate 2-5 FAQs for schema.
-    RHYTHM: Keep paragraphs short and punchy. Use frequent paragraph breaks (<p> tags) to ensure high readability.
-    
-    SOURCE TO REWRITE:
+
+    ### STRICT SEO RULES FOR EACH LANGUAGE:
+    1. **Title**: Must be between 20-60 characters.
+    2. **H1**: Must be between 20-60 characters.
+    3. **SEO Title**: Must be between 20-60 characters TOTAL (this includes the suffix " | Bond.az").
+    4. **Keyword Consistency**: All three fields (Title, H1, SEO Title) MUST use the same core keywords and stay highly relevant to each other.
+    5. **Uniqueness**: Content must be 100% unique and pass plagiarism/AI detectors.
+    6. **Rhythm**: Paragraphs must be short and punchy using <p> tags.
+    7. **Slug**: Generate a URL-friendly slug based on the title.
+
+    ### FORMAT:
+    Return ONLY a JSON object with this structure:
+    {
+      "az": { "title", "h1", "seo_title", "slug", "content", "seo_desc", "faqs": [{"question", "answer"}] },
+      "en": { ... },
+      "ru": { ... }
+    }
+
+    ### SOURCE TO REWRITE:
     Original Title: ${title}
     Original Content: ${content}
     `;
@@ -54,14 +62,15 @@ async function rewriteWithAI(title: string, content: string) {
 }
 
 async function generateImageWithOpenAI(title: string) {
-    console.log(`--- Generating AI Image with GPT Image 2 (ULTRA LOW COST: $0.0005) for: ${title} ---`);
+    console.log(`--- Generating AI Image (AI-Chosen Palette) for: ${title.substring(0, 50)}... ---`);
+    
     const prompt = `Create a mixed-media poster based on the following news headline: "{${title}}" 
     Requirements: 
     - Style: A mix of Wheatpaste and cut-out Collage art.
     - Visual concept: Artistic representation of the news content using paper collage elements pasted on a textured urban wall.
     - Elements: Realistic paper textures, distressed/torn edges, overlapping collage cut-outs.
     - No text, no typography, no logos.
-    - Colors: Limited palette (red, black, off-white), slightly gritty.
+    - Colors: Choose a sophisticated, limited color palette (2-3 colors) that perfectly matches the mood, theme, and context of the news headline. The palette should feel professional and editorial.
     - Lighting: Soft cinematic lighting.`;
 
     try {
@@ -198,84 +207,108 @@ async function fetchWithViewSource(url: string) {
     }
 }
 
-async function runNewsBot(count = 2) {
-    console.log(`--- BOND AI BOT: STARTING (Target: ${count} posts) ---`);
+async function runNewsBot(limit = 5) {
+    console.log(`--- BOND AI BOT: STARTING TOP-${limit} CHECK ---`);
     console.time("Total Action Time");
 
-    const feed = await parser.parseURL('https://oxu.az/feed');
-    let processedCount = 0;
+    try {
+        const feed = await parser.parseURL('https://oxu.az/feed');
+        const itemsToCheck = feed.items.slice(0, limit);
+        let publishedCount = 0;
 
-    for (const item of feed.items) {
-        if (processedCount >= count) break;
+        for (const item of itemsToCheck) {
+            // Check if post already exists by common_id (GUID)
+            const { data: exists } = await supabase
+                .from('posts')
+                .select('id')
+                .eq('common_id', item.guid)
+                .limit(1);
 
-        const { data: exists } = await supabase.from('posts').select('id').eq('common_id', item.guid).limit(1);
-        if (exists && exists.length > 0) continue;
-
-        console.log(`\n[${processedCount + 1}/${count}] Processing: ${item.title}`);
-
-        try {
-            const source = await fetchWithViewSource(item.link!);
-            if (!source || !source.text) continue;
-
-            const [aiResult, generatedImageUrl] = await Promise.all([
-                rewriteWithAI(item.title!, source.text),
-                generateImageWithOpenAI(item.title!)
-            ]);
-
-            const myImageUrl = await uploadImageToR2(generatedImageUrl || source.imageUrl!, item.title!);
-
-            const translations = await Promise.all(['az', 'en', 'ru'].map(async (lang) => {
-                const post = aiResult[lang];
-
-                const { data: catData } = await supabase
-                    .from('categories')
-                    .select('name, slug')
-                    .eq('common_slug', source.category.slug)
-                    .eq('lang', lang)
-                    .limit(1)
-                    .single();
-
-                const { data: randomAuthors } = await supabase
-                    .from('authors')
-                    .select('id, name')
-                    .eq('lang', lang);
-
-                const selectedAuthor = randomAuthors && randomAuthors.length > 0
-                    ? randomAuthors[Math.floor(Math.random() * randomAuthors.length)]
-                    : { id: null, name: "Admin" };
-
-                return {
-                    common_id: item.guid,
-                    lang: lang,
-                    title: post.title,
-                    slug: slugifyTitle(post.title),
-                    category: catData?.name || source.category.name,
-                    category_slug: catData?.slug || source.category.slug,
-                    image: myImageUrl,
-                    summary: post.seo_desc,
-                    content: post.content,
-                    faqs: post.faqs,
-                    date: new Date().toISOString(),
-                    author: selectedAuthor.name,
-                    author_id: selectedAuthor.id,
-                    views: Math.floor(Math.random() * 800) + 200
-                };
-            }));
-
-            const { error } = await supabase.from('posts').insert(translations);
-            if (error) {
-                console.error('DB Insert Error:', error);
-            } else {
-                console.log(`--- SUCCESS: Published [${item.title}] ---`);
-                processedCount++;
+            if (exists && exists.length > 0) {
+                console.log(`[SKIP] Already exists: ${item.title}`);
+                continue;
             }
-        } catch (err) {
-            console.error(`Failed to process item: ${item.title}`, err);
-        }
-    }
 
-    console.timeEnd("Total Action Time");
-    if (processedCount === 0) console.log("Yeni xəbər tapılmadı.");
+            console.log(`\n[PROCESS] New item found: ${item.title}`);
+
+            try {
+                const source = await fetchWithViewSource(item.link!);
+                if (!source || !source.text) {
+                    console.log(`[FAILED] Could not extract content for: ${item.title}`);
+                    continue;
+                }
+
+                // AI Processing & Image Generation in parallel
+                const [aiResult, generatedImageUrl] = await Promise.all([
+                    rewriteWithAI(item.title!, source.text),
+                    generateImageWithOpenAI(item.title!)
+                ]);
+
+                // Upload to R2 (Fallback to original if AI generation fails)
+                const myImageUrl = await uploadImageToR2(generatedImageUrl || source.imageUrl!, item.title!);
+
+                const translations = await Promise.all(['az', 'en', 'ru'].map(async (lang) => {
+                    const post = aiResult[lang];
+
+                    // Find correct category for this language
+                    const { data: catData } = await supabase
+                        .from('categories')
+                        .select('name, slug')
+                        .eq('common_slug', source.category.slug)
+                        .eq('lang', lang)
+                        .limit(1)
+                        .single();
+
+                    // Random author assignment
+                    const { data: randomAuthors } = await supabase
+                        .from('authors')
+                        .select('id, name')
+                        .eq('lang', lang);
+
+                    const selectedAuthor = randomAuthors && randomAuthors.length > 0
+                        ? randomAuthors[Math.floor(Math.random() * randomAuthors.length)]
+                        : { id: null, name: "Admin" };
+
+                    return {
+                        common_id: item.guid,
+                        lang: lang,
+                        title: post.title,
+                        h1: post.h1 || post.title,
+                        seo_title: post.seo_title || `${post.title} | Bond.az`,
+                        slug: post.slug || slugifyTitle(post.title),
+                        category: catData?.name || source.category.name,
+                        category_slug: catData?.slug || source.category.slug,
+                        image: myImageUrl,
+                        summary: post.seo_desc,
+                        content: post.content,
+                        faqs: post.faqs,
+                        date: new Date().toISOString(),
+                        author: selectedAuthor.name,
+                        author_id: selectedAuthor.id,
+                        views: Math.floor(Math.random() * 800) + 200
+                    };
+                }));
+
+                const { error: insertError } = await supabase.from('posts').insert(translations);
+                if (insertError) {
+                    console.error('[ERROR] DB Insert Failed:', insertError);
+                } else {
+                    console.log(`--- SUCCESS: Published [${item.title}] ---`);
+                    publishedCount++;
+                }
+            } catch (processErr) {
+                console.error(`[ERROR] Processing failed for: ${item.title}`, processErr);
+            }
+        }
+
+        console.log(`\n--- BOT FINISHED ---`);
+        console.log(`Total Published: ${publishedCount}`);
+        console.timeEnd("Total Action Time");
+
+    } catch (feedErr) {
+        console.error("CRITICAL ERROR: Failed to fetch RSS feed", feedErr);
+    }
 }
 
-runNewsBot(2);
+// Start with Top 5 Check
+runNewsBot(5);

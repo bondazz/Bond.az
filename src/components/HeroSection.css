@@ -1,12 +1,12 @@
 :root {
-    --hero-bg: #0c0d0e;
-    --card-bg: #1a1b1c;
-    --card-border: rgba(255, 255, 255, 0.05);
-    --meta-text: #888888;
+    --hero-bg: #0f172a; /* Deep Navy Blue */
+    --card-bg: #1e293b; /* Slightly lighter Navy for cards */
+    --card-border: rgba(255, 255, 255, 0.08);
+    --meta-text: #94a3b8; /* Muted slate blue */
     --like-green: #2ecc71;
     --dislike-red: #e74c3c;
-    --ads-bg: #161718;
-    --accent-color: #ed2127;
+    --ads-bg: #1e293b;
+    --accent-color: #3b82f6; /* Blue accent to match theme */
 }
 
 html.light-mode {
@@ -20,7 +20,7 @@ html.light-mode {
 
 .hero-container {
     max-width: 1400px;
-    margin: 20px auto 0;
+    margin: 10px auto 0;
     padding: 0 20px;
     display: flex;
     gap: 30px;
@@ -32,6 +32,7 @@ html.light-mode {
 .side-ads {
     width: 160px;
     flex-shrink: 0;
+    position: relative;
 }
 
 .ads-box {
@@ -43,14 +44,21 @@ html.light-mode {
     align-items: center;
     justify-content: center;
     color: var(--meta-text);
-    transition: background-color 0.4s ease;
+    
+    /* Rock-Solid Sticky Settings */
+    position: sticky;
+    top: 90px; /* Header-in dərhal altında tam sabit qalması üçün */
+    height: 600px;
+    width: 160px;
+    overflow: hidden;
+    z-index: 10;
+    transition: background-color 0.4s ease; /* Yalnız rəng keçidi qalsın */
 }
 
-.placeholder-ads {
-    height: 600px;
-    position: sticky;
-    top: 160px;
-    /* Offset by sticky header height + gap */
+/* Hover effektləri tamamilə ləğv edildi */
+.ads-box:hover {
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .ads-label {
@@ -70,7 +78,7 @@ html.light-mode {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 8px; /* Tightened from 15px */
 }
 
 /* Top Banner (AccessBank) */
@@ -135,9 +143,9 @@ html.light-mode {
 .featured-img-holder {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9.5;
-    /* Slightly taller to fill space */
+    aspect-ratio: 16 / 10.8;
     overflow: hidden;
+    background-color: var(--card-bg); /* Sınırı örtmək üçün arxa fon */
 }
 
 .featured-img-holder img {
@@ -148,13 +156,19 @@ html.light-mode {
 
 .img-blur-edge {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background: linear-gradient(to bottom, transparent, var(--card-bg));
-    backdrop-filter: blur(4px);
-    z-index: 1;
+    bottom: -5px; /* Daha çox aşağı salırıq */
+    left: -5px;
+    right: -5px;
+    height: 60px; /* Daha hündür edirik */
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        var(--card-bg) 80%, 
+        var(--card-bg) 100%
+    );
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 2;
+    pointer-events: none;
 }
 
 /* Overlay Post (Main) */
@@ -195,15 +209,15 @@ html.light-mode {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
-    -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+    mask-image: linear-gradient(to bottom, black 20%, transparent 98%);
+    -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 98%);
 }
 
 .overlay-post .featured-img-holder::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent 20%, var(--hero-bg) 100%);
+    background: linear-gradient(to bottom, transparent 10%, var(--hero-bg) 98%);
     z-index: 1;
 }
 
@@ -248,12 +262,21 @@ html.light-mode .overlay-post .entry-title a {
 .entry-summary {
     font-size: 13px;
     color: var(--meta-text);
-    margin: 0 0 20px 0;
+    margin: 0 0 15px 0;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.small-post .entry-summary {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font-size: 12px;
+    margin-bottom: 10px;
 }
 
 .overlay-post .entry-summary {
@@ -304,11 +327,13 @@ html.light-mode .overlay-post .entry-summary {
 
 /* Card Content (Standard) */
 .card-content {
-    padding: 20px;
+    padding: 15px 20px 10px; /* Balanced bottom padding */
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    /* Stretch to fill card height */
+    margin-top: -30px; /* Lift content up onto the blur area */
+    position: relative;
+    z-index: 5;
     overflow: hidden;
 }
 
@@ -333,17 +358,17 @@ html.light-mode .overlay-post .entry-summary {
 }
 
 .entry-title {
-    font-size: 15px;
+    font-size: 18px; /* Increased from 16px */
     font-weight: 700;
-    margin: 0 0 15px 0;
-    line-height: 1.4;
+    margin: 0 0 10px 0;
+    line-height: 1.3;
     transition: color 0.4s ease;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: 2.8em;
-    /* Exact height for 2 lines */
+    height: 2.6em; /* Adjusted height for 18px font */
+    text-align: center;
 }
 
 .entry-title a {
@@ -355,15 +380,59 @@ html.light-mode .overlay-post .entry-summary {
     color: var(--accent-color);
 }
 
-/* Meta Styles */
-.post-top-meta {
+/* Meta Styles - Unified Pill with Side Lines */
+.meta-pill-container {
     display: flex;
-    gap: 15px;
-    font-size: 11px;
-    color: var(--meta-text);
+    align-items: center;
+    width: 100%;
     margin-bottom: 12px;
+}
+
+.meta-pill-container::before,
+.meta-pill-container::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--card-border);
+    opacity: 0.6;
+}
+
+/* Spaces between lines and the pill */
+.meta-pill-container::before {
+    margin-right: 15px;
+    margin-left: 5px; /* Keeps distance from left card edge */
+}
+
+.meta-pill-container::after {
+    margin-left: 15px;
+    margin-right: 5px; /* Keeps distance from right card edge */
+}
+
+.post-top-meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    color: var(--meta-text);
     font-weight: 700;
-    text-transform: uppercase;
+    text-transform: none;
+    
+    /* Pill Styling */
+    padding: 3px 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 50px;
+    background-color: rgba(255, 255, 255, 0.03);
+    white-space: nowrap; /* Prevent breaking into two lines */
+}
+
+html.light-mode .post-top-meta-pill {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.meta-separator {
+    opacity: 0.3;
+    font-weight: 400;
 }
 
 .meta-item-wrapper {
@@ -378,86 +447,65 @@ html.light-mode .overlay-post .entry-summary {
     justify-content: space-between;
     align-items: center;
     margin-top: auto;
-    padding: 0 15px 0 0;
-    margin-left: -20px;
-    margin-right: -20px;
-    margin-bottom: -20px;
-    background-color: var(--ads-bg);
+    padding: 10px 0 10px 0; /* Symmetrical top and bottom padding */
     border-top: 1px solid var(--card-border);
-    height: 36px;
+    min-height: 28px;
 }
 
-.post-category {
+.post-category-link {
     font-size: 11px;
-    font-weight: 900;
-    color: #ffffff;
-    background: linear-gradient(to right, #ed2127 0%, #8b1114 60%, var(--ads-bg) 100%);
-    padding: 0 30px 0 15px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100%;
-    width: 100% !important;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    position: relative;
-    cursor: pointer;
+    font-weight: 800;
+    color: #3b82f6;
     text-decoration: none;
-}
-
-.cat-wrap {
-    height: 100%;
-    width: 72% !important;
-    flex-shrink: 0;
-}
-
-.post-category[data-title]::before {
-    bottom: auto;
-    top: -35px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-5px);
-}
-
-.post-category[data-title]:hover::before {
-    transform: translateX(-50%) translateY(0);
-}
-
-html.light-mode .post-category {
-    color: #ffffff;
-}
-
-.meta-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.action-item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    letter-spacing: 0.5px;
+    transition: transform 0.2s ease;
+}
+
+.post-category-link:hover {
+    transform: translateX(4px);
+}
+
+.post-actions-pill {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.15); /* More visible border */
+    border-radius: 50px;
+    padding: 2px 10px; /* Minimal padding */
+}
+
+html.light-mode .post-actions-pill {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+.action-item-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--meta-text);
-    position: relative;
+    transition: color 0.2s ease;
 }
 
-.action-item[data-title]::before {
-    bottom: auto;
-    top: -35px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-5px);
+.action-divider {
+    width: 1px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.15); /* More visible divider */
+    margin: 0 8px;
+    opacity: 1; /* Fully visible */
 }
 
-.action-item[data-title]:hover::before {
-    transform: translateX(-50%) translateY(0);
+html.light-mode .action-divider {
+    background-color: rgba(0, 0, 0, 0.15);
 }
 
-.like-action:hover {
-    color: var(--like-green);
-}
-
-.dislike-action:hover {
-    color: var(--dislike-red);
+.action-item-pill:hover {
+    color: var(--accent-color);
 }
 
 /* Bottom Grid (3 Cols) */
@@ -469,17 +517,23 @@ html.light-mode .post-category {
 
 /* --- LATEST NEWS SECTION (30+ Posts Grid) --- */
 .latest-news-section {
-    margin-top: 40px;
+    margin-top: 5px; /* Maximum compaction */
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+}
+
+.latest-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
 }
 
 .section-header {
     display: flex;
     align-items: center;
-    padding-bottom: 30px;
-    margin-bottom: 25px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
     position: relative;
     border-bottom: none;
     min-height: 20px;
@@ -498,29 +552,8 @@ html.light-mode .post-category {
     border: 0;
 }
 
-.section-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 10px;
-    background-image: url("data:image/svg+xml,%3Csvg width='16' height='8' viewBox='0 0 16 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 7H4V1H12V7H16' stroke='%23ed2127' stroke-opacity='1' stroke-width='1.5'/%3E%3C/svg%3E");
-    background-repeat: repeat-x;
-}
-
-html.light-mode .section-header::after {
-    background-image: url("data:image/svg+xml,%3Csvg width='16' height='8' viewBox='0 0 16 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 7H4V1H12V7H16' stroke='%23ed2127' stroke-opacity='1' stroke-width='1.5'/%3E%3C/svg%3E");
-}
-
 .section-title::after {
     display: none;
-}
-
-.latest-posts-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
 }
 
 .load-more-placeholder {
@@ -529,11 +562,6 @@ html.light-mode .section-header::after {
     justify-content: center;
 }
 
-@media (max-width: 900px) {
-    .latest-posts-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
 
 @media (max-width: 600px) {
     .latest-posts-grid {
@@ -551,39 +579,50 @@ html.light-mode .section-header::after {
     }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
     .hero-grid-upper {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 280px; /* Biraz daraldı */
+        gap: 15px;
     }
 
     .mid-right-col {
-        flex-direction: row;
-        gap: 20px;
+        width: 280px;
+        gap: 15px;
     }
 
-    .right-square-ads {
-        flex: 1;
+    .top-ads-container {
+        width: 280px;
+        height: 230px;
     }
 
-    .mid-right-col .post-card {
-        flex: 1;
+    /* Tablet üçün 3 sütunlu qalması */
+    .hero-grid-bottom, .latest-posts-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 15px !important;
     }
+}
 
-    .hero-grid-bottom {
-        grid-template-columns: repeat(2, 1fr);
+@media (max-width: 900px) {
+    .overlay-post .entry-title {
+        font-size: 38px;
     }
 }
 
 @media (max-width: 768px) {
+    .hero-grid-upper {
+        grid-template-columns: 1fr;
+    }
+
     .hero-grid-lower {
         grid-template-columns: 1fr;
     }
 
-    .hero-grid-bottom {
-        grid-template-columns: 1fr;
+    .hero-grid-bottom, .latest-posts-grid {
+        grid-template-columns: 1fr !important; /* Mobilde 1 sutun qalsın */
     }
 
     .mid-right-col {
+        width: 100%;
         flex-direction: column;
     }
 

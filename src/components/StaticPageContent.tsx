@@ -3,16 +3,21 @@
 import React from 'react';
 import { translations, Locale } from '@/utils/translations';
 import Script from 'next/script';
+import Image from 'next/image';
+import { privacyContent } from '@/data/privacyContent';
 import './StaticPage.css';
 
 interface StaticPageProps {
     lang: string;
-    pageKey: 'about' | 'contact' | 'ads' | 'terms';
+    pageKey: 'about' | 'contact' | 'ads' | 'terms' | 'privacy';
 }
 
 const StaticPageContent = ({ lang, pageKey }: StaticPageProps) => {
     const t = translations[lang as Locale] || translations.az;
     const pageData = (t as any).static[pageKey];
+    const pContent = privacyContent[lang as Locale] || privacyContent.az;
+
+    if (!pageData) return null;
 
     const url = `https://bond.az/${lang}/${pageKey}`;
     const schema = {
@@ -37,27 +42,90 @@ const StaticPageContent = ({ lang, pageKey }: StaticPageProps) => {
 
     return (
         <div className="static-page-wrapper">
-            <Script
-                id="static-page-schema"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-            />
 
-            <header className="static-hero">
+            <header className="static-hero-premium">
+                <div className="static-hero-bg">
+                    <Image 
+                        src={`/${pageKey === 'privacy' ? 'terms' : pageKey}-hero.webp`} 
+                        alt={pageData.shortTitle}
+                        fill 
+                        className="object-cover"
+                        priority
+                    />
+                    <div className="static-hero-overlay"></div>
+                </div>
                 <div className="hero-content">
-                    <span className="hero-tag">Bond.az</span>
-                    <h1 className="hero-title">{pageData.shortTitle}</h1>
+                    <div className="hero-logo-wrapper">
+                        {/* Standardized theme-aware logo switching */}
+                        <div className="logo-wrapper">
+                            <Image 
+                                src="/bond_logo_white.png" 
+                                alt="Bond.az Logo" 
+                                width={140} 
+                                height={25}
+                                className="site-logo-img logo-dark-mode"
+                                priority
+                            />
+                            <Image 
+                                src="/bond_logo_black.png" 
+                                alt="Bond.az Logo" 
+                                width={140} 
+                                height={25}
+                                className="site-logo-img logo-light-mode"
+                                priority
+                            />
+                        </div>
+                    </div>
+                    <h1 className="hero-title-premium">{pageData.shortTitle}</h1>
                     <p className="hero-subtitle">{pageData.subtitle}</p>
                 </div>
             </header>
 
             <main className="static-body-container">
                 
+                {/* PRIVACY CONTENT - STRUCTURED LONG FORM */}
+                {pageKey === 'privacy' && (
+                    <div className="privacy-rich-content">
+                        <p className="privacy-intro-lead">{pContent.intro}</p>
+                        
+                        <div className="privacy-sections-grid">
+                            {pContent.sections.map((section, idx) => (
+                                <div key={idx} className="privacy-section-card">
+                                    <h3 className="p-section-h">{section.h}</h3>
+                                    {section.p && <p className="p-section-p">{section.p}</p>}
+                                    
+                                    {section.items && (
+                                        <ul className="p-section-list">
+                                            {section.items.map((item, i) => (
+                                                <li key={i} dangerouslySetInnerHTML={{ __html: item }}></li>
+                                            ))}
+                                        </ul>
+                                    )}
+
+                                    {section.list && (
+                                        <div className="p-tag-cloud">
+                                            {section.list.map((item, i) => (
+                                                <span key={i} className="p-tag">{item}</span>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {section.sub && (
+                                        <div className="p-sub-block">
+                                            <h4>{section.sub.h}</h4>
+                                            <p>{section.sub.p}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* ABOUT US CONTENT */}
                 {pageKey === 'about' && (
                     <div className="about-rich-content">
                         <section className="about-intro-section">
-                            <div className="section-icon">📰</div>
                             <p className="lead-text">{pageData.content}</p>
                         </section>
 

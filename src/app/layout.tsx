@@ -4,8 +4,10 @@ import "./globals.css";
 import Header from "@/components/Header";
 import dynamic from "next/dynamic";
 const Footer = dynamic(() => import("@/components/Footer"), { ssr: true });
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { headers } from 'next/headers';
+import { getPosts } from "@/utils/postFetcher";
+import { Locale } from "@/utils/translations";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,14 +42,31 @@ export default async function RootLayout({
 }>) {
   const headerList = await headers();
   const lang = headerList.get('x-lang') || 'az';
+  const initialTickerPosts = await getPosts(lang, undefined, 1, 10);
 
   return (
     <html lang={lang} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} h-full antialiased`}>
       <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light-mode');
+                } else {
+                  document.documentElement.classList.add('light-mode');
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            })();
+          `
+        }} />
       </head>
       <body className="min-h-full flex flex-col">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} value={{ light: 'light-mode', dark: 'dark' }}>
-          <Header />
+        <ThemeProvider>
+          <Header initialLang={lang as Locale} initialPosts={initialTickerPosts} />
           <main className="flex-1">
             {children}
           </main>

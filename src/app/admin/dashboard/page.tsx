@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
-    const [activeTab, setActiveTab] = useState<'posts' | 'authors'>('posts');
+    const [activeTab, setActiveTab] = useState<'posts' | 'authors' | 'ads'>('posts');
     const [stats, setStats] = useState({ totalPosts: 0, totalViews: 0, categories: 0 });
     const [posts, setPosts] = useState<any[]>([]);
     const [authors, setAuthors] = useState<any[]>([]);
+    const [ads, setAds] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [botLoading, setBotLoading] = useState(false);
     
@@ -15,6 +16,12 @@ export default function AdminDashboard() {
     const [isAuthorModalOpen, setIsAuthorModalOpen] = useState(false);
     const [editingAuthor, setEditingAuthor] = useState<any>(null);
     const [authorForm, setAuthorForm] = useState({ name: '', job_title: '', lang: 'az', avatar: '' });
+    
+    // Ads Form State
+    const [isAdModalOpen, setIsAdModalOpen] = useState(false);
+    const [editingAd, setEditingAd] = useState<any>(null);
+    const [adForm, setAdForm] = useState({ slot_id: 'hero_square', type: 'image', content: '', link_url: '', is_active: true });
+    
     const [uploading, setUploading] = useState(false);
 
     const router = useRouter();
@@ -31,9 +38,12 @@ export default function AdminDashboard() {
             if (activeTab === 'posts') {
                 const postsRes = await fetch('/api/admin/posts');
                 if (postsRes.ok) setPosts(await postsRes.json());
-            } else {
+            } else if (activeTab === 'authors') {
                 const authorsRes = await fetch('/api/admin/authors');
                 if (authorsRes.ok) setAuthors(await authorsRes.json());
+            } else {
+                const adsRes = await fetch('/api/admin/ads');
+                if (adsRes.ok) setAds(await adsRes.json());
             }
         } catch (err) {
             console.error('Data fetch error:', err);
@@ -42,14 +52,14 @@ export default function AdminDashboard() {
         }
     };
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, uploadType: 'author' | 'ad' = 'author') => {
         const file = e.target.files?.[0];
         if (!file) return;
 
         setUploading(true);
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('type', 'author');
+        formData.append('type', uploadType);
 
         try {
             const res = await fetch('/api/admin/upload', {
@@ -58,7 +68,11 @@ export default function AdminDashboard() {
             });
             const data = await res.json();
             if (data.url) {
-                setAuthorForm({ ...authorForm, avatar: data.url });
+                if (uploadType === 'ad') {
+                    setAdForm({ ...adForm, content: data.url });
+                } else {
+                    setAuthorForm({ ...authorForm, avatar: data.url });
+                }
             }
         } catch (err) {
             alert('Şəkil yüklənmədi');
@@ -165,6 +179,12 @@ export default function AdminDashboard() {
                         >
                             Müəlliflər
                         </button>
+                        <button 
+                            onClick={() => setActiveTab('ads')}
+                            className={`text-xs uppercase tracking-widest font-bold ${activeTab === 'ads' ? 'text-white' : 'text-gray-500'}`}
+                        >
+                            Reklamlar
+                        </button>
                     </nav>
                 </div>
                 <div className="flex items-center gap-6">
@@ -199,13 +219,23 @@ export default function AdminDashboard() {
                 {/* Content Table */}
                 <div className="bg-[#111] border border-white/5 rounded-2xl overflow-hidden">
                     <div className="p-6 border-b border-white/5 flex justify-between items-center">
-                        <h3 className="font-bold">{activeTab === 'posts' ? 'Son Xəbərlər' : 'Müəlliflər'}</h3>
+                        <h3 className="font-bold">
+                            {activeTab === 'posts' ? 'Son Xəbərlər' : activeTab === 'authors' ? 'Müəlliflər' : 'Reklam Meneceri'}
+                        </h3>
                         {activeTab === 'authors' && (
                             <button 
                                 onClick={() => { setEditingAuthor(null); setAuthorForm({ name: '', job_title: '', lang: 'az', avatar: '' }); setIsAuthorModalOpen(true); }}
                                 className="bg-white/10 hover:bg-white/20 text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
                             >
                                 YENİ MÜƏLLİF
+                            </button>
+                        )}
+                        {activeTab === 'ads' && (
+                            <button 
+                                onClick={() => { setEditingAd(null); setAdForm({ slot_id: 'hero_square', type: 'image', content: '', link_url: '', is_active: true }); setIsAdModalOpen(true); }}
+                                className="bg-white/10 hover:bg-white/20 text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                            >
+                                YENİ REKLAM
                             </button>
                         )}
                     </div>
@@ -241,7 +271,7 @@ export default function AdminDashboard() {
                                         ))}
                                     </tbody>
                                 </>
-                            ) : (
+                            ) : activeTab === 'authors' ? (
                                 <>
                                     <thead>
                                         <tr className="text-xs text-gray-500 uppercase tracking-widest border-b border-white/5">
@@ -265,6 +295,44 @@ export default function AdminDashboard() {
                                                 <td className="px-6 py-4 text-right">
                                                     <button onClick={() => { setEditingAuthor(author); setAuthorForm({ name: author.name, job_title: author.job_title, lang: author.lang, avatar: author.avatar }); setIsAuthorModalOpen(true); }} className="text-gray-500 hover:text-white mr-4">Redaktə</button>
                                                     <button onClick={() => handleDeleteAuthor(author.id)} className="text-gray-500 hover:text-red-500">Sil</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </>
+                            ) : (
+                                <>
+                                    <thead>
+                                        <tr className="text-xs text-gray-500 uppercase tracking-widest border-b border-white/5">
+                                            <th className="px-6 py-4 font-medium">Reklam Slotu</th>
+                                            <th className="px-6 py-4 font-medium">Növ</th>
+                                            <th className="px-6 py-4 font-medium">Status</th>
+                                            <th className="px-6 py-4 font-medium text-right">Əməliyyat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-white/5">
+                                        {ads.map((ad) => (
+                                            <tr key={ad.id} className="hover:bg-white/[0.02]">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-10 h-10 rounded bg-white/5 flex items-center justify-center text-[10px] font-bold text-gray-500 border border-white/5 uppercase">
+                                                            {ad.slot_id.replace('_', ' ')}
+                                                        </div>
+                                                        <div className="text-sm font-medium uppercase">{ad.slot_id}</div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase ${ad.type === 'image' ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-500/20 text-purple-400'}`}>
+                                                        {ad.type}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase ${ad.is_active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                                        {ad.is_active ? 'AKTİV' : 'PASSİV'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <button onClick={() => { setEditingAd(ad); setAdForm({ slot_id: ad.slot_id, type: ad.type, content: ad.content, link_url: ad.link_url || '', is_active: ad.is_active }); setIsAdModalOpen(true); }} className="text-gray-500 hover:text-white mr-4">Redaktə</button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -346,6 +414,134 @@ export default function AdminDashboard() {
                                     className="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl text-sm font-bold shadow-lg shadow-red-900/20 transition-all disabled:opacity-50"
                                 >
                                     {isSaving ? '...' : 'YADDA SAXLA'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            {/* Ad Modal */}
+            {isAdModalOpen && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+                    <div className="bg-[#111] border border-white/10 w-full max-w-lg rounded-2xl p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+                        <h2 className="text-xl font-bold mb-6">{editingAd ? 'Reklamı Redaktə Et' : 'Yeni Reklam'}</h2>
+                        <form onSubmit={async (e) => {
+                            e.preventDefault();
+                            setIsSaving(true);
+                            try {
+                                const res = await fetch('/api/admin/ads', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(adForm)
+                                });
+                                if (res.ok) {
+                                    setIsAdModalOpen(false);
+                                    fetchData();
+                                }
+                            } finally {
+                                setIsSaving(false);
+                            }
+                        }} className="space-y-4">
+                            <div>
+                                <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Reklam Slotu</label>
+                                <select 
+                                    value={adForm.slot_id} 
+                                    onChange={e => setAdForm({...adForm, slot_id: e.target.value})}
+                                    className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none appearance-none"
+                                >
+                                    <option value="hero_square">Hero Kvadrat (300x300)</option>
+                                    <option value="intra_article">Xəbər Daxili (Kvadrat)</option>
+                                    <option value="sidebar_left">Sol Sidebar (Skyscraper)</option>
+                                    <option value="sidebar_right">Sağ Sidebar (Skyscraper)</option>
+                                    <option value="top_banner">Üst Baner (970x90)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Növ</label>
+                                <div className="flex gap-4">
+                                    <button 
+                                        type="button"
+                                        onClick={() => setAdForm({...adForm, type: 'image'})}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-bold border ${adForm.type === 'image' ? 'border-red-500 bg-red-500/10' : 'border-white/5 bg-white/5'}`}
+                                    >
+                                        ŞƏKİL + LİNK
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setAdForm({...adForm, type: 'code'})}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-bold border ${adForm.type === 'code' ? 'border-red-500 bg-red-500/10' : 'border-white/5 bg-white/5'}`}
+                                    >
+                                        HTML KODU
+                                    </button>
+                                </div>
+                            </div>
+
+                            {adForm.type === 'image' ? (
+                                <>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Reklam Şəkli</label>
+                                        <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5">
+                                            {adForm.content && <img src={adForm.content} className="w-16 h-16 rounded object-cover" />}
+                                            <div className="flex-1">
+                                                <input 
+                                                    type="file" 
+                                                    accept="image/*" 
+                                                    onChange={(e) => handleFileUpload(e, 'ad')}
+                                                    className="text-xs text-gray-500"
+                                                />
+                                                <p className="text-[10px] text-gray-600 mt-1">AVIF/WebP formatına avtomatik çevriləcək</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Xarici Link (URL)</label>
+                                        <input 
+                                            type="url" 
+                                            value={adForm.link_url} 
+                                            onChange={e => setAdForm({...adForm, link_url: e.target.value})}
+                                            placeholder="https://example.com"
+                                            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                <div>
+                                    <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">HTML / JS Kodu</label>
+                                    <textarea 
+                                        value={adForm.content} 
+                                        onChange={e => setAdForm({...adForm, content: e.target.value})}
+                                        rows={6}
+                                        placeholder="<script>...</script> və ya <ins>...</ins>"
+                                        className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none font-mono"
+                                    />
+                                </div>
+                            )}
+
+                            <div className="flex items-center gap-2">
+                                <input 
+                                    type="checkbox" 
+                                    checked={adForm.is_active} 
+                                    onChange={e => setAdForm({...adForm, is_active: e.target.checked})}
+                                    id="ad-active"
+                                />
+                                <label htmlFor="ad-active" className="text-xs text-gray-400">Bu reklam aktiv olsun</label>
+                            </div>
+
+                            <div className="flex gap-4 pt-4">
+                                <button 
+                                    type="button" 
+                                    onClick={() => setIsAdModalOpen(false)}
+                                    className="flex-1 bg-white/5 hover:bg-white/10 py-3 rounded-xl text-sm font-bold transition-all"
+                                >
+                                    İMTİNA
+                                </button>
+                                <button 
+                                    type="submit"
+                                    disabled={isSaving || uploading}
+                                    className="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl text-sm font-bold transition-all"
+                                >
+                                    {isSaving ? '...' : 'REKLAMI YADDA SAXLA'}
                                 </button>
                             </div>
                         </form>

@@ -4,23 +4,25 @@ import { notFound } from 'next/navigation';
 import { translations, Locale } from '@/utils/translations';
 import { supabase } from '@/utils/supabase';
 import Image from 'next/image';
+import Script from 'next/script';
 import InfiniteScroll from '@/components/InfiniteScroll';
+import AdSlot from '@/components/AdSlot';
 import '@/components/HeroSection.css'; // Reklam və layout stilləri üçün
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string, slug: string }> }): Promise<Metadata> {
     const { lang, slug } = await params;
     const author = await getAuthorBySlug(slug);
-    
+
     if (!author) return {};
 
     const baseUrl = "https://bond.az";
     const authorUrl = `${baseUrl}/${lang}/author/${slug}`;
     const title = `${author.name} | Bond.az`;
-    const description = lang === 'az' 
+    const description = lang === 'az'
         ? `${author.name} tərəfindən paylaşılan ən son araşdırmalar, xəbərlər və özəl təhlillər - Bond.az xəbər portalında.`
-        : lang === 'ru' 
-        ? `Последние исследования, новости и эксклюзивный анализ от ${author.name} на новостном портале Bond.az.`
-        : `The latest research, news, and exclusive analysis from ${author.name} on the Bond.az news portal.`;
+        : lang === 'ru'
+            ? `Последние исследования, новости и эксклюзивный анализ от ${author.name} на новостном портале Bond.az.`
+            : `The latest research, news, and exclusive analysis from ${author.name} on the Bond.az news portal.`;
 
     return {
         title,
@@ -75,9 +77,9 @@ async function getPostsByAuthor(authorId: number, lang: string) {
         .eq('author_id', authorId)
         .eq('lang', lang)
         .order('id', { ascending: false });
-    
+
     if (error) return [];
-    
+
     return data.map(p => ({
         id: p.id,
         title: p.title,
@@ -102,7 +104,7 @@ async function getPostsByAuthor(authorId: number, lang: string) {
 export default async function AuthorPage({ params }: { params: Promise<{ lang: string, slug: string }> }) {
     const { lang, slug } = await params;
     const author = await getAuthorBySlug(slug);
-    
+
     if (!author) notFound();
 
     const authorPosts = await getPostsByAuthor(author.id, lang);
@@ -111,23 +113,21 @@ export default async function AuthorPage({ params }: { params: Promise<{ lang: s
     return (
         <main>
             <section className="hero-container">
-                {/* Left Ads */}
+                {/* Left Ads - Standardized with Home Page */}
                 <aside className="side-ads left">
-                    <div className="ads-box placeholder-ads">
-                        <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
+                    <AdSlot slotId="sidebar_left" width={160} height={600} className="ads-box" />
                 </aside>
 
                 <div className="hero-mid-wrapper">
                     {/* Author Profile - Refined Editorial Layout */}
                     <div className="relative w-full py-8 mb-16 overflow-visible border-b border-zinc-100 dark:border-zinc-800/50 pb-16">
                         <div className="flex flex-col md:flex-row items-center md:items-start gap-10 md:gap-14">
-                            
+
                             {/* Left: Artistic Profile Image (Slightly Smaller) */}
                             <div className="relative flex-shrink-0">
                                 <div className="absolute -inset-4 bg-red-600/5 dark:bg-red-600/10 rounded-full blur-2xl -z-10 animate-pulse"></div>
                                 <div className="relative w-44 h-44 md:w-56 md:h-56">
-                                    <div 
+                                    <div
                                         className="brush-container drop-shadow-xl dark:drop-shadow-[0_10px_30px_rgba(255,255,255,0.05)]"
                                         style={{
                                             width: '100%',
@@ -142,8 +142,8 @@ export default async function AuthorPage({ params }: { params: Promise<{ lang: s
                                             WebkitMaskPosition: 'center'
                                         }}
                                     >
-                                        <Image 
-                                            src={author.avatar || "/placeholder-user.png"} 
+                                        <Image
+                                            src={author.avatar || "/placeholder-user.png"}
                                             alt={author.name}
                                             fill
                                             className="object-cover"
@@ -160,44 +160,45 @@ export default async function AuthorPage({ params }: { params: Promise<{ lang: s
                                         {author.job_title || 'REDAKTOR'}
                                     </span>
                                 </div>
-                                                            <h1 className="author-title text-5xl md:text-6xl font-black tracking-tighter leading-tight mb-4">
+                                <h1 className="author-title text-5xl md:text-6xl font-black tracking-tighter leading-tight mb-4">
                                     {author.name}
                                 </h1>
 
                                 <p className="author-bio max-w-2xl text-lg leading-relaxed font-medium mb-6">
-                                    {author.bio || (lang === 'az' ? `${author.name} tərəfindən paylaşılan bütün xəbər və araşdırmalar bu bölmədə toplanıb.` : 
-                                     lang === 'ru' ? `Все новости и исследования, опубликованные ${author.name}, собраны в этом разделе.` : 
-                                     `All news and research published by ${author.name} are collected in this section.`)}
+                                    {author.bio || (lang === 'az' ? `${author.name} tərəfindən paylaşılan bütün xəbər və araşdırmalar bu bölmədə toplanıb.` :
+                                        lang === 'ru' ? `Все новости и исследования, опубликованные ${author.name}, собраны в этом разделе.` :
+                                            `All news and research published by ${author.name} are collected in this section.`)}
                                 </p>
 
                                 {/* Social Links with Mail */}
                                 <div className="flex items-center justify-center md:justify-start gap-4">
                                     <a href={`mailto:${author.email || 'info@bond.az'}`} className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-red-600 dark:hover:bg-red-600 transition-all shadow-md">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                                     </a>
                                     <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-red-600 dark:hover:bg-red-600 transition-all shadow-md">
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1V12h3l-.5 3H13v6.8c4.56-.93 8-4.96 8-9.8z"/></svg>
+                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1V12h3l-.5 3H13v6.8c4.56-.93 8-4.96 8-9.8z" /></svg>
                                     </a>
                                     <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-red-600 dark:hover:bg-red-600 transition-all shadow-md">
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg>
                                     </a>
                                     <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-red-600 dark:hover:bg-red-600 transition-all shadow-md">
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" /></svg>
                                     </a>
                                     <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-red-600 dark:hover:bg-red-600 transition-all shadow-md">
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        
+
                         {/* Background Floating Letter (Even more subtle) */}
                         <div className="absolute top-0 right-0 text-[10rem] md:text-[12rem] font-black text-zinc-100/30 dark:text-zinc-800/10 -z-20 pointer-events-none select-none leading-none">
                             {author.name.charAt(0)}
                         </div>
 
                         {/* Force Contrast Styles */}
-                        <style dangerouslySetInnerHTML={{ __html: `
+                        <style dangerouslySetInnerHTML={{
+                            __html: `
                             .author-title { color: #000000 !important; }
                             .dark .author-title { color: #ffffff !important; }
                             .author-bio { color: #111111 !important; }
@@ -205,7 +206,8 @@ export default async function AuthorPage({ params }: { params: Promise<{ lang: s
                         ` }} />
 
                         {/* SEO Schemas */}
-                        <script
+                        <Script
+                            id="author-schema"
                             type="application/ld+json"
                             dangerouslySetInnerHTML={{
                                 __html: JSON.stringify({
@@ -220,7 +222,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ lang: s
                                             "jobTitle": author.job_title || "Redaktor",
                                             "image": {
                                                 "@type": "ImageObject",
-                                                "url": author.avatar || "https://bond.az/logo.png"
+                                                "url": author.avatar || "https://bond.az/bond_logo_black.png"
                                             },
                                             "url": `https://bond.az/author/${author.slug}`,
                                             "description": author.bio || `${author.name} Bond.az saytında araşdırmaçı müəllifdir.`,
@@ -241,7 +243,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ lang: s
                                             "url": "https://bond.az",
                                             "logo": {
                                                 "@type": "ImageObject",
-                                                "url": "https://bond.az/logo.png",
+                                                "url": "https://bond.az/bond_logo_black.png",
                                                 "width": 512,
                                                 "height": 512
                                             },
@@ -277,11 +279,9 @@ export default async function AuthorPage({ params }: { params: Promise<{ lang: s
                     )}
                 </div>
 
-                {/* Right Ads */}
+                {/* Right Ads - Standardized with Home Page */}
                 <aside className="side-ads right">
-                    <div className="ads-box placeholder-ads">
-                        <Image src="/sidebar-ads.webp" alt="Sidebar Ad" width={160} height={600} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
+                    <AdSlot slotId="sidebar_right" width={160} height={600} className="ads-box" />
                 </aside>
             </section>
         </main>

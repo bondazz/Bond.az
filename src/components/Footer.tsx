@@ -6,9 +6,7 @@ import Image from "next/image";
 import { Mail } from "lucide-react";
 import { translations, Locale } from "@/utils/translations";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
-import logoBlack from "../../public/bond_logo_black.webp";
-import logoWhite from "../../public/bond_logo_white.webp";
+import { useTheme } from "@/components/ThemeProvider";
 import './Footer.css';
 
 export default function Footer() {
@@ -34,10 +32,11 @@ export default function Footer() {
         {
             title: lang === 'az' ? 'Xəbərlər' : 'News',
             links: [
-                { name: t.politics, href: getLocalizedPath("/politics") },
-                { name: t.business, href: getLocalizedPath("/business") },
-                { name: t.economy, href: getLocalizedPath("/economy") },
-                { name: t.travel, href: getLocalizedPath("/travel") },
+                { name: t.politics, href: lang === 'az' ? "/siyaset" : `/${lang}/politics` },
+                { name: t.business, href: lang === 'az' ? "/biznes" : `/${lang}/business` },
+                { name: t.economy, href: lang === 'az' ? "/iqtisadiyyat" : `/${lang}/economy` },
+                { name: t.travel, href: lang === 'az' ? "/seyahat" : `/${lang}/travel` },
+                { name: t.currencies, href: getLocalizedPath("/currencies") },
             ]
         },
         {
@@ -76,6 +75,7 @@ export default function Footer() {
             title: 'Bond.az',
             links: [
                 { name: t.about, href: getLocalizedPath("/about") },
+                { name: t.authors, href: getLocalizedPath("/authors") },
                 { name: t.contact, href: getLocalizedPath("/contact") },
                 { name: t.ads, href: getLocalizedPath("/ads") },
                 { name: t.terms, href: getLocalizedPath("/terms") },
@@ -86,18 +86,29 @@ export default function Footer() {
     return (
         <footer className="footer-haberler">
             <div className="footer-container">
-                
+
                 {/* 1. Header Row */}
                 <div className="footer-h-top">
                     <div className="footer-h-left">
                         <Link href={getLocalizedPath("/")}>
-                             <Image 
-                                src={resolvedTheme === 'dark' ? logoWhite : logoBlack} 
-                                alt="Bond.az Logo" 
-                                width={160} 
-                                height={40}
-                                style={{ height: 'auto' }}
-                            />
+                            <div className="logo-wrapper relative w-[140px] h-[25px]">
+                                <Image 
+                                    src="/bond_logo_white.png" 
+                                    alt="Bond.az White Logo" 
+                                    title="Bond.az"
+                                    width={140}
+                                    height={25}
+                                    className="logo-dark-mode"
+                                />
+                                <Image 
+                                    src="/bond_logo_black.png" 
+                                    alt="Bond.az Black Logo" 
+                                    title="Bond.az"
+                                    width={140}
+                                    height={25}
+                                    className="logo-light-mode"
+                                />
+                            </div>
                         </Link>
                         <span className="footer-h-copy">© Copyright {new Date().getFullYear()} Bond.az</span>
                     </div>
@@ -139,9 +150,9 @@ export default function Footer() {
                     <div className="footer-h-action-box">
                         <h4 className="footer-h-action-title">{lang === 'az' ? 'TƏTBİQİMİZİ YÜKLƏYİN' : 'DOWNLOAD OUR APP'}</h4>
                         <div className="footer-h-apps">
-                            <img src="https://www.haberler.com/mstatic/assets/img/footer-icon/app-store.svg" alt="App Store" width={85} height={40} loading="lazy" />
-                            <img src="https://www.haberler.com/mstatic/assets/img/footer-icon/google-play.svg" alt="Google Play" width={85} height={40} loading="lazy" />
-                            <img src="https://www.haberler.com/mstatic/assets/img/footer-icon/app-galery.svg" alt="App Gallery" width={85} height={40} loading="lazy" />
+                            <img src="https://cdn.bond.az/assets/icons/app-store.svg" alt="App Store" title="Bond.az App Store" width={85} height={40} loading="lazy" />
+                            <img src="https://cdn.bond.az/assets/icons/google-play.svg" alt="Google Play" title="Bond.az Google Play" width={85} height={40} loading="lazy" />
+                            <img src="https://cdn.bond.az/assets/icons/app-gallery.svg" alt="App Gallery" title="Bond.az App Gallery" width={85} height={40} loading="lazy" />
                         </div>
                     </div>
                 </div>
