@@ -21,15 +21,17 @@ export async function POST(
         const column = type === 'like' ? 'likes' : 'dislikes';
 
         // Direct increment
-        const { data: post } = await supabase.from('posts').select(column).eq('id', id).single();
+        const { data: post } = await supabase.from('posts').select(column).eq('id', id).single() as any;
+        const currentCount = (post?.[column] || 0);
+
         const { error } = await supabase
             .from('posts')
-            .update({ [column]: (post?.[column] || 0) + 1 })
+            .update({ [column]: currentCount + 1 })
             .eq('id', id);
 
         if (error) throw error;
 
-        return NextResponse.json({ success: true, count: (post?.[column] || 0) + 1 });
+        return NextResponse.json({ success: true, count: currentCount + 1 });
     } catch (err: any) {
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
