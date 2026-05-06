@@ -10,12 +10,17 @@ import { getPosts } from '@/utils/postFetcher';
 import { Post } from '@/data/posts';
 import './Header.css';
 
-const Header = () => {
+interface HeaderProps {
+  initialLang?: Locale;
+  initialPosts?: Post[];
+}
+
+const Header = ({ initialLang, initialPosts = [] }: HeaderProps) => {
   const pathname = usePathname() || "";
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [tickerPosts, setTickerPosts] = useState<Post[]>([]);
+  const [tickerPosts, setTickerPosts] = useState<Post[]>(initialPosts);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Post[]>([]);
   const [isSearching, setIsSearching] = useState(false);
