@@ -113,7 +113,7 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
                                     <div className="small-brush-container">
                                         <Image 
                                             src={post.authorAvatar || "/placeholder-user.png"} 
-                                            alt={post.author} 
+                                            alt={post.author || "Author"} 
                                             width={48} 
                                             height={48} 
                                             className="photo avatar" 
