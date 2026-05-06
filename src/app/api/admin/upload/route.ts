@@ -47,7 +47,6 @@ export async function POST(request: Request) {
         if (isGif) {
             optimizedBuffer = await sharpInstance
                 .webp({ 
-                    animated: true,
                     quality: 70,
                     lossless: false
                 })
