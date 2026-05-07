@@ -75,7 +75,11 @@ const Header = ({ initialLang, initialPosts = [] }: HeaderProps) => {
   const toggleDarkMode = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!mounted) return;
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    
+    // Explicitly toggle based on current visual state if theme is still uncertain
+    const currentTheme = theme || (document.documentElement.classList.contains("dark") ? "dark" : "light");
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
   };
 
   const getLocalizedPath = (path: string) => {
@@ -144,7 +148,8 @@ const Header = ({ initialLang, initialPosts = [] }: HeaderProps) => {
     window.location.href = newPath;
   };
 
-  const isDarkMode = mounted ? resolvedTheme === 'dark' : true; // Default to dark on server
+  // Improved isDarkMode logic to prevent flicker and two-click issues
+  const isDarkMode = mounted ? (theme === 'dark') : false; 
   const t = translations[lang as Locale] || translations.az;
 
   const menuItems = [
