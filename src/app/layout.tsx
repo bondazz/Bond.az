@@ -52,11 +52,10 @@ export default async function RootLayout({
             (function() {
               try {
                 var theme = localStorage.getItem('theme');
-                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                var supportDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (theme === 'dark' || (!theme && supportDark)) {
                   document.documentElement.classList.add('dark');
-                  document.documentElement.classList.remove('light-mode');
                 } else {
-                  document.documentElement.classList.add('light-mode');
                   document.documentElement.classList.remove('dark');
                 }
               } catch (e) {}

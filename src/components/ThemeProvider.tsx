@@ -21,7 +21,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     // 2. Check document class (set by layout.tsx script)
     const hasDarkClass = document.documentElement.classList.contains("dark");
-    const hasLightClass = document.documentElement.classList.contains("light-mode");
     
     let initialTheme: Theme = "light"; // Default fallback
     
@@ -29,8 +28,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       initialTheme = savedTheme;
     } else if (hasDarkClass) {
       initialTheme = "dark";
-    } else if (hasLightClass) {
-      initialTheme = "light";
     }
     
     setThemeState(initialTheme);
@@ -38,9 +35,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Ensure the classes are correctly applied based on the determined theme
     if (initialTheme === "dark") {
       document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light-mode");
     } else {
-      document.documentElement.classList.add("light-mode");
       document.documentElement.classList.remove("dark");
     }
   }, []);
@@ -51,9 +46,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     if (newTheme === "dark") {
       document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light-mode");
     } else {
-      document.documentElement.classList.add("light-mode");
       document.documentElement.classList.remove("dark");
     }
   };

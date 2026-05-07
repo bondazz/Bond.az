@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a; /* Deep Navy */
-  --header-bg: #0f172a;
-  --header-bottom-bg: #1e293b; /* Slightly lighter navy */
-  --foreground: #ffffff;
-  --accent-color: #3b82f6; /* Modern Blue Accent */
-  --muted-color: #94a3b8;
-  --card-border: rgba(255, 255, 255, 0.08);
-  --hero-bg: #0f172a;
-}
-
-html.light-mode {
-  --background: #ffffff;    /* Back to pure white for main body */
-  --header-bg: #ffffff;      /* Top header row white */
-  --header-bottom-bg: #f8f9fa; /* Ticker row very subtle grey */
+  --background: #ffffff;    /* Light mode default */
+  --header-bg: #ffffff;
+  --header-bottom-bg: #f8f9fa;
   --foreground: #0c0d0e;
   --accent-color: #ed2127;
   --muted-color: #6b7280;
   --card-border: rgba(0, 0, 0, 0.05);
   --hero-bg: #ffffff;
+}
+
+html.dark {
+  --background: #0f172a; /* Dark mode override */
+  --header-bg: #0f172a;
+  --header-bottom-bg: #1e293b;
+  --foreground: #ffffff;
+  --accent-color: #3b82f6;
+  --muted-color: #94a3b8;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --hero-bg: #0f172a;
 }
 
 /* Global Strict Fluid Layout */
@@ -38,17 +38,17 @@ body {
 
 /* Instant Dual-Logo Logic (Flicker-Free) */
 .logo-dark-mode {
-  display: block !important;
+  display: none !important;
 }
 .logo-light-mode {
-  display: none !important;
+  display: block !important;
 }
 
-html.light-mode .logo-dark-mode {
-  display: none !important;
-}
-html.light-mode .logo-light-mode {
+html.dark .logo-dark-mode {
   display: block !important;
+}
+html.dark .logo-light-mode {
+  display: none !important;
 }
 
 .logo-wrapper {
