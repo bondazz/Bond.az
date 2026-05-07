@@ -391,17 +391,26 @@ html.dark .dark-mode-slide-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    border: 1px solid #444;
+    border: 1px solid #d1d5db; /* Improved visibility in light mode */
     border-radius: 20px;
     padding: 6px 15px;
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
+    color: #0c0d0e;
+    transition: all 0.2s;
+}
+
+html.dark .personalize-btn {
+    border-color: #444;
     color: white;
-    transition: background 0.2s;
 }
 
 .personalize-btn:hover {
+    background-color: #f5f5f5;
+}
+
+html.dark .personalize-btn:hover {
     background-color: #222;
 }
 

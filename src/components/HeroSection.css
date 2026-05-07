@@ -240,7 +240,7 @@ html.dark {
     font-size: 50px;
     line-height: 1.1;
     font-weight: 800;
-    color: #fff;
+    color: #111827; /* Light mode default */
     margin: 0 0 15px 0;
     letter-spacing: -1.5px;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -251,12 +251,16 @@ html.dark {
     height: auto !important;
 }
 
-.overlay-post .entry-title a {
+html.dark .overlay-post .entry-title {
     color: #ffffff;
 }
 
-html.light-mode .overlay-post .entry-title a {
-    color: #000000;
+.overlay-post .entry-title a {
+    color: inherit;
+}
+
+html.dark .overlay-post .entry-title a {
+    color: #ffffff;
 }
 
 .entry-summary {

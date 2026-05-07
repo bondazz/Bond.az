@@ -174,14 +174,15 @@
 .post-actions-pill {
     display: flex;
     align-items: center;
-    background: rgba(0, 0, 0, 0.02); /* Light mode default */
-    border: 1px solid var(--card-border);
+    background: #f3f4f6; /* Light mode default */
+    border: 1px solid #d1d5db; /* Visible border */
     border-radius: 50px;
     padding: 4px 12px;
 }
 
 html.dark .post-actions-pill {
     background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .action-item-pill {

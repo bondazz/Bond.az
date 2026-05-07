@@ -230,8 +230,8 @@ html.dark .post-card-footer {
 .post-actions-pill {
     display: flex;
     align-items: center;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
+    background: #f3f4f6; /* Light mode default */
+    border: 1px solid #d1d5db; /* Visible border */
     border-radius: 50px;
     padding: 4px 8px;
 }
