@@ -140,11 +140,11 @@ export default function Footer() {
                     <div className="footer-h-action-box">
                         <h4 className="footer-h-action-title">{lang === 'az' ? 'BİZİ İZLƏYİN' : 'FOLLOW US'}</h4>
                         <div className="footer-h-social-list">
-                            <Link href="#" className="footer-h-social-icon icon-fb"><FacebookIcon /></Link>
-                            <Link href="#" className="footer-h-social-icon icon-tw"><XIcon /></Link>
-                            <Link href="#" className="footer-h-social-icon icon-ig"><InstagramIcon /></Link>
-                            <Link href="#" className="footer-h-social-icon icon-li"><LinkedinIcon /></Link>
-                            <Link href="#" className="footer-h-social-icon icon-yt"><YoutubeIcon /></Link>
+                            <Link href="#" className="footer-h-social-icon icon-fb" aria-label="Facebook"><FacebookIcon /></Link>
+                            <Link href="#" className="footer-h-social-icon icon-tw" aria-label="X (Twitter)"><XIcon /></Link>
+                            <Link href="#" className="footer-h-social-icon icon-ig" aria-label="Instagram"><InstagramIcon /></Link>
+                            <Link href="#" className="footer-h-social-icon icon-li" aria-label="LinkedIn"><LinkedinIcon /></Link>
+                            <Link href="#" className="footer-h-social-icon icon-yt" aria-label="YouTube"><YoutubeIcon /></Link>
                         </div>
                     </div>
                     <div className="footer-h-action-box">

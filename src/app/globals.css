@@ -6,12 +6,12 @@
   --header-bg: #ffffff;
   --header-bottom-bg: #f8f9fa;
   --accent-color: #ed2127;
-  --muted-color: #6b7280;
+  --muted-color: #555555;
   --card-border: rgba(0, 0, 0, 0.08);
   --card-bg: #ffffff;
   --hero-bg: #ffffff;
   --text-main: #0c0d0e;
-  --meta-text: #6b7280;
+  --meta-text: #595959; /* Improved contrast for Light mode */
   --border-color: #e0e0e0;
 }
 
@@ -26,7 +26,7 @@ html.dark {
   --card-bg: #1e293b;
   --hero-bg: #0f172a;
   --text-main: #ffffff;
-  --meta-text: #94a3b8;
+  --meta-text: #94a3b8; /* Restored for Dark mode */
   --border-color: #222222;
 }
 

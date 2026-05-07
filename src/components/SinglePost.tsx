@@ -143,13 +143,13 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
                                         <span className="share-label">{t.share}</span>
                                     </div>
                                     <div className="top-shared-icons effect-fadeout">
-                                        <a className="share-action" data-title="X" href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer">
+                                        <a className="share-action" aria-label="Share on X" data-title="X" href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer">
                                             <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
                                         </a>
-                                        <a className="share-action" data-title="Facebook" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer">
+                                        <a className="share-action" aria-label="Share on Facebook" data-title="Facebook" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer">
                                             <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                                         </a>
-                                        <button className="share-action copy-link-btn" data-title="Copy Link" onClick={handleCopyLink}>
+                                        <button className="share-action copy-link-btn" aria-label="Copy link" data-title="Copy Link" onClick={handleCopyLink}>
                                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
                                         </button>
                                     </div>
@@ -190,6 +190,7 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
                                 width={800} 
                                 height={450} 
                                 priority 
+                                className="featured-img"
                                 sizes="100vw" 
                              />
                              <figcaption 
