@@ -55,7 +55,7 @@ export default function AdSlot({ slotId, className, width = 300, height = 300 }:
                         alt="Reklam" 
                         width={width} 
                         height={height} 
-                        className="w-full h-full object-contain rounded-lg bg-black/10"
+                        className="w-full h-full object-contain"
                         unoptimized={ad.content.includes('.gif')}
                     />
                 </Link>
