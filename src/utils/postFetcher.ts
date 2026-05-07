@@ -169,3 +169,41 @@ export async function getPostsByTag(tag: string, lang: string, page: number = 1,
         authorSlug: p.authors?.slug,
     })) as Post[];
 }
+
+export async function getCategoryBySlug(slug: string, lang: string) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    const url = `${supabaseUrl}/rest/v1/categories?select=*&slug=eq.${slug}&lang=eq.${lang}&limit=1`;
+    
+    const response = await fetch(url, {
+        headers: {
+            'apikey': anonKey!,
+            'Authorization': `Bearer ${anonKey!}`,
+            'Accept': 'application/vnd.pgrst.object+json'
+        },
+        cache: 'no-store'
+    });
+
+    if (!response.ok) return null;
+    return await response.json();
+}
+
+export async function getTagBySlug(slug: string, lang: string) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    const url = `${supabaseUrl}/rest/v1/tags?select=*&slug=eq.${slug}&lang=eq.${lang}&limit=1`;
+    
+    const response = await fetch(url, {
+        headers: {
+            'apikey': anonKey!,
+            'Authorization': `Bearer ${anonKey!}`,
+            'Accept': 'application/vnd.pgrst.object+json'
+        },
+        cache: 'no-store'
+    });
+
+    if (!response.ok) return null;
+    return await response.json();
+}

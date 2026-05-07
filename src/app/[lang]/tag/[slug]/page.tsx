@@ -3,7 +3,7 @@ import { translations, Locale } from '@/utils/translations';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import InfiniteScroll from '@/components/InfiniteScroll';
-import { getPostsByTag } from '@/utils/postFetcher';
+import { getPostsByTag, getTagBySlug } from '@/utils/postFetcher';
 import AdSlot from '@/components/AdSlot';
 import '@/components/HeroSection.css';
 import Script from 'next/script';
@@ -12,25 +12,33 @@ export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string, slug: string }> }): Promise<Metadata> {
     const { lang, slug } = await params;
-    const decodedTag = decodeURIComponent(slug);
     const siteUrl = "https://bond.az";
     const currentUrl = lang === 'az' ? `${siteUrl}/tag/${slug}` : `${siteUrl}/${lang}/tag/${slug}`;
 
+    // --- FETCH FROM DB ---
+    const dbTag = await getTagBySlug(slug, lang);
+    const decodedTag = dbTag?.name || decodeURIComponent(slug);
+
+    const title = dbTag?.seo_title || `#${decodedTag} - Son Xəbərlər və Analizlər | Bond.az`;
+    const description = dbTag?.seo_desc || `${decodedTag} haqqında ən son xəbərlər, araşdırmalar və analitik materiallar Bond.az saytında.`;
+
     return {
-        title: `#${decodedTag} - Son Xəbərlər və Analizlər | Bond.az`,
-        description: `${decodedTag} haqqında ən son xəbərlər, araşdırmalar və analitik materiallar Bond.az saytında.`,
+        title: title,
+        description: description,
         alternates: {
             canonical: currentUrl,
         },
         openGraph: {
-            title: `#${decodedTag} - Bond.az`,
-            description: `${decodedTag} haqqında ən son xəbərlər...`,
+            title: title,
+            description: description,
             url: currentUrl,
             type: 'website',
             images: ['/bond_brand.webp'],
         },
         twitter: {
             card: 'summary_large_image',
+            title: title,
+            description: description,
             images: ['/bond_brand.webp'],
         }
     };
@@ -39,17 +47,25 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function TagPage({ params }: { params: Promise<{ lang: string, slug: string }> }) {
     const { lang, slug } = await params;
     const t = translations[lang as Locale] || translations.az;
-    const decodedTag = decodeURIComponent(slug);
+    
+    // --- FETCH FROM DB ---
+    const dbTag = await getTagBySlug(slug, lang);
+    const decodedTag = dbTag?.name || decodeURIComponent(slug);
     
     // We fetch posts that contain this tag/slug in title or content
     const tagPosts = await getPostsByTag(decodedTag, lang);
+
+    const displayTitle = dbTag?.name || decodedTag;
+    const displayDesc = dbTag?.seo_desc || (lang === 'az' ? `${decodedTag} mövzusunda ən son xəbərlər və maraqlı məlumatlar.` : 
+                         lang === 'ru' ? `Последние новости и интересная информация по теме ${decodedTag}.` : 
+                         `Latest news and interesting information about ${decodedTag}.`);
 
     // Schema for Tag Page
     const schema = {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
-        "name": `#${decodedTag} - Bond.az`,
-        "description": `${decodedTag} mövzusunda xəbərlər`,
+        "name": `#${displayTitle} - Bond.az`,
+        "description": displayDesc,
         "url": lang === 'az' ? `https://bond.az/tag/${slug}` : `https://bond.az/${lang}/tag/${slug}`,
         "publisher": {
             "@type": "Organization",
@@ -79,15 +95,26 @@ export default async function TagPage({ params }: { params: Promise<{ lang: stri
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
                             <div style={{ width: '4px', height: '40px', backgroundColor: 'var(--accent-color)' }}></div>
                             <h1 style={{ fontSize: '42px', fontWeight: '900', textTransform: 'uppercase', margin: 0, letterSpacing: '-1.5px' }}>
-                                #{decodedTag}
+                                #{displayTitle}
                             </h1>
                         </div>
                         <p style={{ fontSize: '18px', color: 'var(--meta-text)', maxWidth: '800px', lineHeight: '1.6', margin: '0 0 0 20px' }}>
-                            {lang === 'az' ? `${decodedTag} mövzusunda ən son xəbərlər və maraqlı məlumatlar.` : 
-                             lang === 'ru' ? `Последние новости и интересная информация по теме ${decodedTag}.` : 
-                             `Latest news and interesting information about ${decodedTag}.`}
+                            {displayDesc}
                         </p>
                     </div>
+
+                    {/* --- DEEP-DIVE TAG CONTENT --- */}
+                    {dbTag?.content && (
+                        <div className="tag-seo-content" style={{ 
+                            marginBottom: '40px', 
+                            padding: '30px', 
+                            background: 'var(--header-bottom-bg)', 
+                            borderRadius: '12px',
+                            border: '1px solid var(--card-border)',
+                            lineHeight: '1.8',
+                            fontSize: '16px'
+                        }} dangerouslySetInnerHTML={{ __html: dbTag.content }} />
+                    )}
 
                     <InfiniteScroll initialPosts={tagPosts} lang={lang} tag={decodedTag} />
 

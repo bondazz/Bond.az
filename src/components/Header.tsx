@@ -121,7 +121,7 @@ const Header = ({ initialLang, initialPosts = [] }: HeaderProps) => {
             .eq('lang', newLang)
             .limit(1)
             .single();
-
+ 
           if (targetPost) {
             const langPrefix = newLang === 'az' ? '' : `/${newLang}`;
             window.location.href = `${langPrefix}/${targetPost.category_slug}/${targetPost.slug}`;
@@ -129,7 +129,45 @@ const Header = ({ initialLang, initialPosts = [] }: HeaderProps) => {
           }
         }
       } catch (err) {
-        console.error("Redirect logic failed, using fallback", err);
+        console.error("Post redirect logic failed", err);
+      }
+    }
+
+    // --- CATEGORY REDIRECT LOGIC ---
+    let potentialCategorySlug = '';
+    if (pathParts.length === 1 && !['en', 'ru', 'az'].includes(pathParts[0])) {
+      potentialCategorySlug = pathParts[0];
+    } else if (pathParts.length === 2 && ['en', 'ru', 'az'].includes(pathParts[0])) {
+      potentialCategorySlug = pathParts[1];
+    }
+
+    if (potentialCategorySlug) {
+      try {
+        const { data: currentCat } = await supabase
+          .from('categories')
+          .select('common_slug')
+          .eq('slug', potentialCategorySlug)
+          .eq('lang', lang)
+          .limit(1)
+          .single();
+
+        if (currentCat?.common_slug) {
+          const { data: targetCat } = await supabase
+            .from('categories')
+            .select('slug')
+            .eq('common_slug', currentCat.common_slug)
+            .eq('lang', newLang)
+            .limit(1)
+            .single();
+
+          if (targetCat) {
+            const langPrefix = newLang === 'az' ? '' : `/${newLang}`;
+            window.location.href = `${langPrefix}/${targetCat.slug}`;
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Category redirect logic failed", err);
       }
     }
 
