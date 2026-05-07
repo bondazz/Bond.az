@@ -1,27 +1,32 @@
 /* Post Card Premium - EXACT Match to Screenshot */
 
 .post-card-premium {
-    background-color: #0f172a; /* Specific dark navy from screenshot */
+    background-color: #ffffff;
     border-radius: 18px;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     flex-direction: column;
     height: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .post-card-premium:hover {
     transform: translateY(-4px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* Light Mode Support - Though screenshot is Dark */
-html.light-mode .post-card-premium {
-    background-color: #ffffff;
-    border-color: rgba(0,0,0,0.06);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+/* Dark Mode Support */
+html.dark .post-card-premium {
+    background-color: #0f172a;
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+}
+
+html.dark .post-card-premium:hover {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 /* Media Section */
@@ -47,8 +52,12 @@ html.light-mode .post-card-premium {
 .media-overlay-gradient {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent 50%, rgba(15, 23, 42, 0.9) 100%);
+    background: linear-gradient(to bottom, transparent 50%, rgba(255, 255, 255, 0.5) 100%);
     z-index: 1;
+}
+
+html.dark .media-overlay-gradient {
+    background: linear-gradient(to bottom, transparent 50%, rgba(15, 23, 42, 0.9) 100%);
 }
 
 /* Category Badge - Pill Style with Icon */
@@ -69,7 +78,11 @@ html.light-mode .post-card-premium {
     gap: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     text-decoration: none;
-    background-color: #3b82f6; /* Default Blue */
+    background-color: #ed2127; /* Accent Red */
+}
+
+html.dark .post-badge {
+    background-color: #3b82f6; /* Modern Blue */
 }
 
 .badge-icon {
@@ -85,11 +98,11 @@ html.light-mode .post-card-premium {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
+    color: #4b5563;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,9 +111,16 @@ html.light-mode .post-card-premium {
     transition: all 0.2s ease;
 }
 
+html.dark .post-save-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
 .post-save-btn:hover {
     background: var(--accent-color);
     border-color: var(--accent-color);
+    color: #fff;
 }
 
 /* Body Section */
@@ -121,22 +141,22 @@ html.light-mode .post-card-premium {
 }
 
 .meta-pill {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
     padding: 5px 14px;
     border-radius: 50px;
     display: flex;
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: #9ca3af;
+    color: #6b7280;
     font-weight: 500;
 }
 
-html.light-mode .meta-pill {
-    background: #f3f4f6;
-    border-color: #e5e7eb;
-    color: #6b7280;
+html.dark .meta-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
 }
 
 /* Title */
@@ -149,11 +169,11 @@ html.light-mode .meta-pill {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    color: #ffffff;
+    color: #111827;
 }
 
-html.light-mode .post-title {
-    color: #111827;
+html.dark .post-title {
+    color: #ffffff;
 }
 
 .post-title a {
@@ -165,7 +185,7 @@ html.light-mode .post-title {
 .post-summary {
     font-size: 14px;
     line-height: 1.5;
-    color: #9ca3af;
+    color: #4b5563;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -173,8 +193,8 @@ html.light-mode .post-title {
     margin-bottom: 20px;
 }
 
-html.light-mode .post-summary {
-    color: #4b5563;
+html.dark .post-summary {
+    color: #9ca3af;
 }
 
 /* Footer Action Bar */
@@ -183,17 +203,17 @@ html.light-mode .post-summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-html.light-mode .post-card-footer {
-    border-top-color: rgba(0,0,0,0.05);
+html.dark .post-card-footer {
+    border-top-color: rgba(255, 255, 255, 0.05);
 }
 
 .read-more-btn {
     font-size: 12px;
     font-weight: 800;
-    color: #3b82f6;
+    color: var(--accent-color);
     text-decoration: none;
     letter-spacing: 0.5px;
     display: flex;
@@ -210,15 +230,15 @@ html.light-mode .post-card-footer {
 .post-actions-pill {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
     border-radius: 50px;
     padding: 4px 8px;
 }
 
-html.light-mode .post-actions-pill {
-    background: #f9fafb;
-    border-color: #e5e7eb;
+html.dark .post-actions-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .action-btn-pill {
@@ -227,38 +247,42 @@ html.light-mode .post-actions-pill {
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #9ca3af;
+    color: #6b7280;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     padding: 6px 10px;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
-html.light-mode .action-btn-pill {
-    color: #6b7280;
+html.dark .action-btn-pill {
+    color: #9ca3af;
 }
 
 .action-divider {
     width: 1px;
     height: 16px;
-    background: rgba(255, 255, 255, 0.1);
+    background: #e5e7eb;
     margin: 0 4px;
 }
 
-html.light-mode .action-divider {
-    background: #e5e7eb;
+html.dark .action-divider {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .action-btn-pill:hover {
-    color: #fff;
+    color: #000;
 }
 
-html.light-mode .action-btn-pill:hover {
-    color: #000;
+html.dark .action-btn-pill:hover {
+    color: #fff;
 }
 
 /* Variations */
 .post-card-premium.is-overlay .post-card-body {
+    background: linear-gradient(to top, #ffffff 0%, transparent 100%);
+}
+
+html.dark .post-card-premium.is-overlay .post-card-body {
     background: linear-gradient(to top, #0f172a 0%, transparent 100%);
 }

@@ -1,21 +1,21 @@
 :root {
-    --hero-bg: #0f172a; /* Deep Navy Blue */
-    --card-bg: #1e293b; /* Slightly lighter Navy for cards */
-    --card-border: rgba(255, 255, 255, 0.08);
-    --meta-text: #94a3b8; /* Muted slate blue */
-    --like-green: #2ecc71;
-    --dislike-red: #e74c3c;
-    --ads-bg: #1e293b;
-    --accent-color: #3b82f6; /* Blue accent to match theme */
-}
-
-html.light-mode {
-    --hero-bg: #ffffff;
+    --hero-bg: #ffffff; /* Light mode default */
     --card-bg: #ffffff;
     --card-border: rgba(0, 0, 0, 0.1);
     --meta-text: #444444;
-    /* Darker for better readability */
+    --like-green: #2ecc71;
+    --dislike-red: #e74c3c;
     --ads-bg: #f5f5f5;
+    --accent-color: #ed2127; /* Red accent for light mode */
+}
+
+html.dark {
+    --hero-bg: #0f172a; /* Dark mode override */
+    --card-bg: #1e293b;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --meta-text: #94a3b8;
+    --ads-bg: #1e293b;
+    --accent-color: #3b82f6; /* Blue accent for dark mode */
 }
 
 .hero-container {

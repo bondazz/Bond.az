@@ -2,24 +2,32 @@
 
 :root {
   --background: #ffffff;    /* Light mode default */
+  --foreground: #0c0d0e;
   --header-bg: #ffffff;
   --header-bottom-bg: #f8f9fa;
-  --foreground: #0c0d0e;
   --accent-color: #ed2127;
   --muted-color: #6b7280;
-  --card-border: rgba(0, 0, 0, 0.05);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --card-bg: #ffffff;
   --hero-bg: #ffffff;
+  --text-main: #0c0d0e;
+  --meta-text: #6b7280;
+  --border-color: #e0e0e0;
 }
 
 html.dark {
   --background: #0f172a; /* Dark mode override */
+  --foreground: #ffffff;
   --header-bg: #0f172a;
   --header-bottom-bg: #1e293b;
-  --foreground: #ffffff;
   --accent-color: #3b82f6;
   --muted-color: #94a3b8;
   --card-border: rgba(255, 255, 255, 0.08);
+  --card-bg: #1e293b;
   --hero-bg: #0f172a;
+  --text-main: #ffffff;
+  --meta-text: #94a3b8;
+  --border-color: #222222;
 }
 
 /* Global Strict Fluid Layout */

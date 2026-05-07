@@ -1,27 +1,9 @@
 
 
-:root {
-    --bg-color: #0c0d0e;
-    --text-color: #ffffff;
-    --muted-color: #a1a1a1;
-    --border-color: #222222;
-    --header-height: auto;
-    --font-main: var(--font-inter), 'Inter', sans-serif;
-    --header-bottom-bg: #111111;
-}
-
-html.light-mode {
-    --bg-color: #ffffff;
-    --text-color: #0c0d0e;
-    --muted-color: #555555;
-    --border-color: #e0e0e0;
-    --header-bottom-bg: #f9f9f9;
-}
-
 .header-container {
     background-color: var(--header-bg);
-    color: var(--text-color);
-    font-family: var(--font-main);
+    color: var(--foreground);
+    font-family: 'Inter', sans-serif;
     border-bottom: 1px solid var(--border-color);
     width: 100%;
     transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
@@ -77,7 +59,7 @@ html.light-mode {
 }
 
 .main-nav-links li a {
-    color: var(--text-color);
+    color: var(--foreground);
     text-decoration: none;
     font-size: 15px;
     font-weight: bold;
@@ -132,8 +114,8 @@ html.light-mode {
 .search-box {
     display: flex;
     align-items: center;
-    background-color: #1a1b1c;
-    border: 1px solid #333;
+    background-color: #f0f0f0; /* Light mode default */
+    border: 1px solid #cccccc;
     border-radius: 20px;
     padding: 5px 15px;
     width: 250px;
@@ -141,22 +123,22 @@ html.light-mode {
     position: relative;
 }
 
-html.light-mode .search-box {
-    background-color: #f0f0f0;
-    border-color: #cccccc;
+html.dark .search-box {
+    background-color: #1a1b1c;
+    border-color: #333;
 }
 
 .search-box input {
     background: transparent;
     border: none;
-    color: white;
+    color: #0c0d0e; /* Light mode default */
     margin-left: 10px;
     font-size: 14px;
     width: 100%;
 }
 
-html.light-mode .search-box input {
-    color: #0c0d0e;
+html.dark .search-box input {
+    color: white;
 }
 
 .search-box input:focus {
@@ -169,7 +151,7 @@ html.light-mode .search-box input {
     top: calc(100% + 10px);
     left: 0;
     right: 0;
-    background: var(--bg-color);
+    background: var(--background);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -188,7 +170,7 @@ html.light-mode .search-box input {
 .search-status {
     padding: 15px;
     text-align: center;
-    color: var(--muted-color);
+    color: var(--meta-text);
     font-size: 12px;
     font-weight: 600;
 }
@@ -213,11 +195,11 @@ html.light-mode .search-box input {
 }
 
 .search-result-item:hover {
-    background: rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.05); /* Light mode default */
 }
 
-html.light-mode .search-result-item:hover {
-    background: rgba(0,0,0,0.05);
+html.dark .search-result-item:hover {
+    background: rgba(255,255,255,0.05);
 }
 
 .result-thumb {
@@ -243,7 +225,7 @@ html.light-mode .search-result-item:hover {
     display: block;
     font-size: 13px;
     font-weight: 700;
-    color: var(--text-color);
+    color: var(--foreground);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -259,7 +241,7 @@ html.light-mode .search-result-item:hover {
 }
 
 .social-links a {
-    color: var(--text-color);
+    color: var(--foreground);
     font-size: 18px;
     transition: transform 0.2s;
 }
@@ -282,14 +264,14 @@ html.light-mode .search-result-item:hover {
     display: inline-block;
     width: 46px;
     height: 24px;
-    background-color: #333;
+    background-color: #e0e0e0; /* Light mode default */
     border-radius: 12px;
     position: relative;
     transition: background-color 0.4s ease;
 }
 
-html.light-mode .dark-mode-slide {
-    background-color: #e0e0e0;
+html.dark .dark-mode-slide {
+    background-color: #333;
 }
 
 .dark-mode-slide-btn {
@@ -312,8 +294,8 @@ html.light-mode .dark-mode-slide {
     height: 12px;
 }
 
-/* Move thumb in light mode structure */
-html.light-mode .dark-mode-slide-btn {
+/* Move thumb in dark mode structure */
+html.dark .dark-mode-slide-btn {
     transform: translateX(22px);
 }
 
@@ -327,14 +309,14 @@ html.light-mode .dark-mode-slide-btn {
 }
 
 .lang-switcher a {
-    color: var(--muted-color);
+    color: var(--meta-text);
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .lang-switcher a:hover,
 .lang-switcher a.active {
-    color: var(--text-color);
+    color: var(--foreground);
 }
 
 /* Bottom Row */
@@ -367,7 +349,7 @@ html.light-mode .dark-mode-slide-btn {
 }
 
 .secondary-nav li a {
-    color: var(--text-color);
+    color: var(--foreground);
     text-decoration: none;
     font-size: 14px;
     font-weight: bold;
@@ -506,7 +488,7 @@ html.light-mode .dark-mode-slide-btn {
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: var(--text-color);
+    color: var(--foreground);
     font-size: 13px;
     font-weight: 500;
     padding: 0 30px;
@@ -542,7 +524,7 @@ html.light-mode .dark-mode-slide-btn {
 .current-lang {
     font-size: 13px;
     font-weight: 800;
-    color: var(--text-color);
+    color: var(--foreground);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -552,7 +534,7 @@ html.light-mode .dark-mode-slide-btn {
     position: absolute;
     top: 100%;
     right: 0;
-    background: var(--bg-color);
+    background: var(--background);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 10px;
@@ -569,7 +551,7 @@ html.light-mode .dark-mode-slide-btn {
 }
 
 .lang-options a {
-    color: var(--muted-color);
+    color: var(--meta-text);
     text-decoration: none;
     font-size: 13px;
     font-weight: 800;
@@ -578,7 +560,7 @@ html.light-mode .dark-mode-slide-btn {
 }
 
 .lang-options a:hover, .lang-options a.active {
-    color: var(--text-color);
+    color: var(--foreground);
 }
 
 /* Tablet Adjustments */

@@ -174,14 +174,14 @@
 .post-actions-pill {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(0, 0, 0, 0.02); /* Light mode default */
     border: 1px solid var(--card-border);
     border-radius: 50px;
     padding: 4px 12px;
 }
 
-html.light-mode .post-actions-pill {
-    background: rgba(0, 0, 0, 0.02);
+html.dark .post-actions-pill {
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .action-item-pill {
@@ -255,7 +255,7 @@ html.light-mode .post-actions-pill {
     border-radius: 2px;
 }
 
-.dark .image-attribution {
+html.dark .image-attribution {
     color: #ffffff; /* Pure white in dark mode */
 }
 
@@ -422,17 +422,20 @@ html.light-mode .post-actions-pill {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(255, 255, 255, 0.95); /* Light mode default */
+    color: #000;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 12px 20px;
     border-radius: 50px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.dark .premium-toast-content {
-    background: rgba(255, 255, 255, 0.95);
-    color: #000;
+html.dark .premium-toast-content {
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .toast-icon-box {
