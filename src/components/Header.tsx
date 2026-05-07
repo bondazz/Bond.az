@@ -327,25 +327,6 @@ const Header = ({ initialLang, initialPosts = [] }: HeaderProps) => {
           </div>
         </div>
 
-        <style jsx>{`
-          .header-bottom {
-            background-color: var(--bg-color);
-            border-top: 1px solid var(--border-color);
-            transition: background-color 0.5s ease;
-            position: relative;
-            overflow: hidden;
-          }
-
-          .header-bottom::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
-          }
-        `}</style>
         <div className="header-bottom">
           <div className="header-bottom-inner">
             {/* Breaking News Ticker replaces the secondary nav links */}
