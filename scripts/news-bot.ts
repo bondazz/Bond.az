@@ -8,6 +8,9 @@ import stealth from "puppeteer-extra-plugin-stealth";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
 
+import { google } from 'googleapis';
+import * as path from 'path';
+
 dotenv.config({ path: '.env.local' });
 chromium.use(stealth());
 
@@ -509,6 +512,13 @@ async function runNewsBot(limit = 5) {
                 } else {
                     console.log(`--- SUCCESS: Published [${item.title}] ---`);
                     publishedCount++;
+
+                    // --- PING GOOGLE INDEXING ---
+                    for (const post of translations) {
+                        const langPrefix = post.lang === 'az' ? '' : `/${post.lang}`;
+                        const fullUrl = `https://bond.az${langPrefix}/${post.category_slug}/${post.slug}`;
+                        await pingGoogleIndexing(fullUrl);
+                    }
                 }
             } catch (processErr) {
                 console.error(`[ERROR] Processing failed for: ${item.title}`, processErr);
@@ -521,6 +531,34 @@ async function runNewsBot(limit = 5) {
 
     } catch (feedErr) {
         console.error("CRITICAL ERROR: Failed to fetch RSS feed", feedErr);
+    }
+}
+
+// --- GOOGLE INDEXING API PING ---
+async function pingGoogleIndexing(url: string) {
+    console.log(`--- Pinging Google Indexing API for: ${url} ---`);
+    try {
+        const keyPath = path.join(process.cwd(), 'scripts', 'google-key.json');
+        const auth = new google.auth.GoogleAuth({
+            keyFile: keyPath,
+            scopes: ['https://www.googleapis.com/auth/indexing'],
+        });
+
+        const authClient = await auth.getClient();
+        const indexing = google.indexing({
+            version: 'v3',
+            auth: authClient as any,
+        });
+
+        const res = await indexing.urlNotifications.publish({
+            requestBody: {
+                url: url,
+                type: 'URL_UPDATED',
+            },
+        });
+        console.log(`✅ Google Indexing Success: ${res.statusText}`);
+    } catch (error: any) {
+        console.error(`❌ Google Indexing Error: ${error.message}`);
     }
 }
 
