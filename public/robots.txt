@@ -1,0 +1,9 @@
+User-agent: *
+
+Allow: /_next/static/
+Allow: /_next/image/
+Allow: /storage/
+
+Disallow: /api/
+
+Sitemap: https://bond.az/sitemap.xml
