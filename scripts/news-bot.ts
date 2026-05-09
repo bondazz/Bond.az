@@ -538,11 +538,24 @@ async function runNewsBot(limit = 5) {
 async function pingGoogleIndexing(url: string) {
     console.log(`--- Pinging Google Indexing API for: ${url} ---`);
     try {
-        const keyPath = path.join(process.cwd(), 'scripts', 'google-key.json');
-        const auth = new google.auth.GoogleAuth({
-            keyFile: keyPath,
-            scopes: ['https://www.googleapis.com/auth/indexing'],
-        });
+        let auth;
+        const envKey = process.env.GOOGLE_INDEXING_KEY;
+
+        if (envKey) {
+            // Support for Vercel/Production via Environment Variable
+            const credentials = JSON.parse(envKey);
+            auth = new google.auth.GoogleAuth({
+                credentials,
+                scopes: ['https://www.googleapis.com/auth/indexing'],
+            });
+        } else {
+            // Fallback to local file for Development
+            const keyPath = path.join(process.cwd(), 'scripts', 'google-key.json');
+            auth = new google.auth.GoogleAuth({
+                keyFile: keyPath,
+                scopes: ['https://www.googleapis.com/auth/indexing'],
+            });
+        }
 
         const authClient = await auth.getClient();
         const indexing = google.indexing({
