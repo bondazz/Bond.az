@@ -3,8 +3,8 @@ name: Bond.az News Bot 7/24
 on:
   schedule:
     # Bu hissə botun neçə dəqiqədən bir işləyəcəyini təyin edir.
-    # Hazırda hər 15 dəqiqədən bir işləmək üçün sazlanıb.
-    - cron: '*/15 * * * *'
+    # Hazırda hər saatın 0, 15, 30 və 45-ci dəqiqələrində işləmək üçün sazlanıb.
+    - cron: '0,15,30,45 * * * *'
   push:
     branches: [ main ]
   workflow_dispatch: # Lazım olanda əllə də başlatmaq üçün
