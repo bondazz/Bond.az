@@ -328,8 +328,8 @@ async function generateImageWithOpenAI(title: string) {
 }
 
 const r2Endpoint = process.env.CLOUDFLARE_R2_ENDPOINT;
-const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID;
-const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+const r2AccessKeyId = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
+const r2SecretAccessKey = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
 
 if (!r2Endpoint || !r2AccessKeyId || !r2SecretAccessKey) {
     console.error("CRITICAL ERROR: Missing R2 Credentials in Environment!");
