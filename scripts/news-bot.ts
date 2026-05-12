@@ -327,12 +327,20 @@ async function generateImageWithOpenAI(title: string) {
     }
 }
 
+const r2Endpoint = process.env.CLOUDFLARE_R2_ENDPOINT;
+const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID;
+const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+
+if (!r2Endpoint || !r2AccessKeyId || !r2SecretAccessKey) {
+    console.error("CRITICAL ERROR: Missing R2 Credentials in Environment!");
+}
+
 const s3Client = new S3Client({
     region: "auto",
-    endpoint: "https://2b079fb369cb232d35182f81120b85b1.r2.cloudflarestorage.com",
+    endpoint: r2Endpoint || "https://2b079fb369cb232d35182f81120b85b1.r2.cloudflarestorage.com",
     credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+        accessKeyId: r2AccessKeyId || '',
+        secretAccessKey: r2SecretAccessKey || '',
     },
 });
 
