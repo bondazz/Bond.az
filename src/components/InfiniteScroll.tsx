@@ -12,9 +12,10 @@ interface InfiniteScrollProps {
     categorySlug?: string;
     tag?: string;
     isSmall?: boolean;
+    showTimeline?: boolean;
 }
 
-const InfiniteScroll = ({ initialPosts, lang, categorySlug, tag, isSmall = false }: InfiniteScrollProps) => {
+const InfiniteScroll = ({ initialPosts, lang, categorySlug, tag, isSmall = false, showTimeline = false }: InfiniteScrollProps) => {
     const t = translations[lang as Locale] || translations.az;
     const [posts, setPosts] = useState<Post[]>(initialPosts);
     const [page, setPage] = useState(2); 
@@ -54,7 +55,6 @@ const InfiniteScroll = ({ initialPosts, lang, categorySlug, tag, isSmall = false
                 setHasMore(false);
             } else {
                 setPosts(prev => {
-                    // Filter out any posts that already exist in the list to prevent duplicate keys
                     const existingIds = new Set(prev.map(p => p.id));
                     const uniqueNewPosts = newPosts.filter(p => !existingIds.has(p.id));
                     return [...prev, ...uniqueNewPosts];
@@ -70,9 +70,12 @@ const InfiniteScroll = ({ initialPosts, lang, categorySlug, tag, isSmall = false
 
     return (
         <>
-            <div className="latest-posts-grid">
+            <div className={showTimeline ? "timeline-posts-container" : "latest-posts-grid"}>
                 {posts.map(post => (
-                    <PostCard key={post.id} post={post} lang={lang} isSmall={isSmall} />
+                    <div key={post.id} className={showTimeline ? "timeline-item-wrapper" : ""}>
+                        {showTimeline && <div className="timeline-dot"></div>}
+                        <PostCard post={post} lang={lang} isSmall={isSmall} />
+                    </div>
                 ))}
             </div>
 

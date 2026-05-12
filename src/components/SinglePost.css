@@ -146,10 +146,16 @@
     align-items: center;
 }
 
-.updated-date {
-    font-size: 12px; /* Unified size */
+.meta-item {
+    font-size: 12px;
     color: var(--foreground);
     font-weight: 400;
+}
+
+.meta-sep {
+    margin: 0 8px;
+    opacity: 0.3;
+    font-weight: 300;
 }
 
 .t-shared-header { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; color: #bbb; margin-bottom: 0; }

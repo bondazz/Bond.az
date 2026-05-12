@@ -120,7 +120,7 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
                                 "headline": post.title,
                                 "image": [post.image],
                                 "datePublished": post.date,
-                                "dateModified": post.date,
+                                "dateModified": post.updated_at || post.date,
                                 "author": [{
                                     "@type": "Person",
                                     "name": post.author,

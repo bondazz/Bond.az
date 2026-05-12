@@ -114,7 +114,7 @@ async function generateTagSEOContent(tagName: string, lang: string) {
     - SEO Title: High-click-rate title including "${tagName}".
     - SEO Description: Compelling summary for Google.
     - OG Title & Description: Engaging for social media.
-    - Schema: Professional JSON-LD Schema (Article or FAQ).
+    - Schema: Identify the entity type of "${tagName}" (Person, Place, Organization, Product, Event, or General Topic) and generate a detailed JSON-LD Schema for that specific Entity type. For example, if it is a person, use "@type": "Person"; if it is a location, use "@type": "Place"; if it is a company, use "@type": "Organization".
 
     ### FORMAT:
     Return ONLY a JSON object:
@@ -486,6 +486,23 @@ async function runNewsBot(limit = 5) {
                         ? randomAuthors[Math.floor(Math.random() * randomAuthors.length)]
                         : { id: null, name: "Admin" };
 
+                    // --- NEW: Newsroom Structure ---
+                    // 1. Generate updated_at (random 1-3 minutes after date)
+                    const pubDate = new Date();
+                    const randomMinutes = Math.floor(Math.random() * 3) + 1;
+                    const updatedDate = new Date(pubDate.getTime() + randomMinutes * 60000);
+
+                    // 2. Assign a random Editor for 'Reviewed by'
+                    const { data: editors } = await supabase
+                        .from('authors')
+                        .select('id, name')
+                        .eq('lang', lang)
+                        .eq('role', 'Editor');
+
+                    const selectedEditor = editors && editors.length > 0
+                        ? editors[Math.floor(Math.random() * editors.length)]
+                        : null;
+
                     return {
                         common_id: item.guid,
                         lang: lang,
@@ -499,9 +516,11 @@ async function runNewsBot(limit = 5) {
                         summary: post.seo_desc,
                         content: linkifiedContent,
                         faqs: post.faqs,
-                        date: new Date().toISOString(),
+                        date: pubDate.toISOString(),
+                        updated_at: updatedDate.toISOString(),
                         author: selectedAuthor.name,
                         author_id: selectedAuthor.id,
+                        reviewed_by_id: selectedEditor ? selectedEditor.id : null,
                         views: Math.floor(Math.random() * 800) + 200
                     };
                 }));
@@ -576,4 +595,4 @@ async function pingGoogleIndexing(url: string) {
 }
 
 // Start with Top 5 Check
-runNewsBot(2);
+runNewsBot(5);

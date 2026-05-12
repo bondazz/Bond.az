@@ -130,7 +130,23 @@ const SinglePost: React.FC<SinglePostProps> = ({ post }) => {
                                     {post.authorJobTitle && <span className="meta-job">- {post.authorJobTitle}</span>}
                                 </div>
                                 <div className="author-bottom-row">
-                                    <time className="updated-date">{t.lastUpdated}: {formatPostDate(post.date, lang)}</time>
+                                    <time className="meta-item published-date">{formatPostDate(post.date, lang)}</time>
+                                    {post.updated_at && (
+                                        <>
+                                            <span className="meta-sep">|</span>
+                                            <time className="meta-item updated-date">
+                                                {t.lastUpdated}: {formatPostDate(post.updated_at, lang)}
+                                            </time>
+                                        </>
+                                    )}
+                                    {post.reviewed_by && (
+                                        <>
+                                            <span className="meta-sep">|</span>
+                                            <span className="meta-item meta-reviewed">
+                                                {t.reviewedBy}: <Link href={lang === 'az' ? `/author/${post.reviewed_by_slug}` : `/${lang}/author/${post.reviewed_by_slug}`}>{post.reviewed_by}</Link>
+                                            </span>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>

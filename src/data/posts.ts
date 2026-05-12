@@ -21,6 +21,9 @@ export interface Post {
     audio_url?: string;
     seo_title?: string;
     h1?: string;
+    updated_at?: string;
+    reviewed_by?: string;
+    reviewed_by_slug?: string;
 }
 
 export const posts: Post[] = [

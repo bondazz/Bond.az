@@ -8,7 +8,7 @@ export async function getPosts(lang?: string, categorySlug?: string, page: numbe
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
-    let url = `${supabaseUrl}/rest/v1/posts?select=id,common_id,lang,title,category,category_slug,slug,image,summary,likes,dislikes,views,date,author,audio_url,authors(name,avatar,job_title,slug)&order=id.desc&offset=${offset}&limit=${limit}`;
+    let url = `${supabaseUrl}/rest/v1/posts?select=id,common_id,lang,title,category,category_slug,slug,image,summary,likes,dislikes,views,date,updated_at,author,audio_url,authors!posts_author_id_fkey(name,avatar,job_title,slug)&order=id.desc&offset=${offset}&limit=${limit}`;
     if (lang) url += `&lang=eq.${lang}`;
     if (categorySlug) url += `&category_slug=eq.${categorySlug}`;
 
@@ -41,6 +41,7 @@ export async function getPosts(lang?: string, categorySlug?: string, page: numbe
         dislikes: p.dislikes,
         views: p.views,
         date: p.date,
+        updated_at: p.updated_at,
         author: p.authors?.name || p.author,
         authorAvatar: p.authors?.avatar,
         authorJobTitle: p.authors?.job_title,
@@ -54,7 +55,7 @@ export async function getPostBySlug(slug: string, lang: string) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
-    const url = `${supabaseUrl}/rest/v1/posts?select=*,authors(name,avatar,job_title,slug)&slug=eq.${slug}&lang=eq.${lang}&limit=1`;
+    const url = `${supabaseUrl}/rest/v1/posts?select=*,authors!posts_author_id_fkey(name,avatar,job_title,slug)&slug=eq.${slug}&lang=eq.${lang}&limit=1`;
     
     const response = await fetch(url, {
         headers: {
@@ -87,6 +88,26 @@ export async function getPostBySlug(slug: string, lang: string) {
         }
     }
 
+    // Fetch Reviewer details if exists
+    let reviewerName = null;
+    let reviewerSlug = null;
+    if (data.reviewed_by_id) {
+        const revUrl = `${supabaseUrl}/rest/v1/authors?select=name,slug&id=eq.${data.reviewed_by_id}&limit=1`;
+        const revRes = await fetch(revUrl, {
+            headers: {
+                'apikey': anonKey!,
+                'Authorization': `Bearer ${anonKey!}`,
+                'Accept': 'application/vnd.pgrst.object+json'
+            },
+            cache: 'no-store'
+        });
+        if (revRes.ok) {
+            const revData = await revRes.json();
+            reviewerName = revData.name;
+            reviewerSlug = revData.slug;
+        }
+    }
+
     return {
         id: data.id,
         commonId: data.common_id,
@@ -107,7 +128,10 @@ export async function getPostBySlug(slug: string, lang: string) {
         authorJobTitle: authorDetails?.job_title,
         authorId: data.author_id,
         authorSlug: authorDetails?.slug,
-        audio_url: data.audio_url
+        audio_url: data.audio_url,
+        updated_at: data.updated_at,
+        reviewed_by: reviewerName,
+        reviewed_by_slug: reviewerSlug
     } as Post;
 }
 
@@ -136,7 +160,7 @@ export async function getPostsByTag(tag: string, lang: string, page: number = 1,
 
     // We search for the tag in both title and content using ILIKE
     // Note: If you have a specific 'tags' column, use that instead.
-    const url = `${supabaseUrl}/rest/v1/posts?select=id,common_id,lang,title,category,category_slug,slug,image,summary,likes,dislikes,views,date,author,authors(name,avatar,job_title,slug)&lang=eq.${lang}&or=(title.ilike.*${tag}*,content.ilike.*${tag}*)&order=id.desc&offset=${offset}&limit=${limit}`;
+    const url = `${supabaseUrl}/rest/v1/posts?select=id,common_id,lang,title,category,category_slug,slug,image,summary,likes,dislikes,views,date,author,authors!posts_author_id_fkey(name,avatar,job_title,slug)&lang=eq.${lang}&or=(title.ilike.*${tag}*,content.ilike.*${tag}*)&order=id.desc&offset=${offset}&limit=${limit}`;
 
     const response = await fetch(url, {
         headers: {
