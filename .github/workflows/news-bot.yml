@@ -1,37 +1,34 @@
-name: Bond.az News Bot 7/24
+name: "Bond.az News Bot 7/24"
 
 on:
   schedule:
-    # Bu hissə botun neçə dəqiqədən bir işləyəcəyini təyin edir.
-    # Hazırda hər saatın 0, 15, 30 və 45-ci dəqiqələrində işləmək üçün sazlanıb.
-    - cron: '0,15,30,45 * * * *'
+    - cron: "*/10 * * * *"
   push:
-    branches: [ main ]
-  workflow_dispatch: # Lazım olanda əllə də başlatmaq üçün
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright
         run: npx playwright install chromium --with-deps
 
       - name: Run News Bot
         env:
-          # Bu dəyişənləri GitHub Repository -> Settings -> Secrets and variables -> Actions hissəsində əlavə etməlisiniz
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_R2_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_R2_PUBLIC_URL }}
