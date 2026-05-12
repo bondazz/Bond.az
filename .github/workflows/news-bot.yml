@@ -5,6 +5,8 @@ on:
     # Bu hissə botun neçə dəqiqədən bir işləyəcəyini təyin edir.
     # Hazırda hər 5 dəqiqədən bir işləmək üçün sazlanıb.
     - cron: '*/5 * * * *'
+  push:
+    branches: [ main ]
   workflow_dispatch: # Lazım olanda əllə də başlatmaq üçün
 
 jobs:
