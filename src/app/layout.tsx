@@ -54,6 +54,8 @@ export default async function RootLayout({
   return (
     <html lang={lang} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${montserrat.variable} h-full antialiased`}>
       <head>
+        <link rel="preconnect" href="https://cdn.bond.az" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.bond.az" />
         <Script
           id="theme-init"
           strategy="beforeInteractive"

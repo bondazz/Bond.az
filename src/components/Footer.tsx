@@ -150,9 +150,9 @@ export default function Footer() {
                     <div className="footer-h-action-box">
                         <h4 className="footer-h-action-title">{lang === 'az' ? 'TƏTBİQİMİZİ YÜKLƏYİN' : 'DOWNLOAD OUR APP'}</h4>
                         <div className="footer-h-apps">
-                            <img src="https://cdn.bond.az/assets/icons/app-store.svg" alt="App Store" title="Bond.az App Store" width={85} height={40} loading="lazy" />
-                            <img src="https://cdn.bond.az/assets/icons/google-play.svg" alt="Google Play" title="Bond.az Google Play" width={85} height={40} loading="lazy" />
-                            <img src="https://cdn.bond.az/assets/icons/app-gallery.svg" alt="App Gallery" title="Bond.az App Gallery" width={85} height={40} loading="lazy" />
+                            <Image src="https://cdn.bond.az/assets/icons/app-store.svg" alt="App Store" title="Bond.az App Store" width={85} height={40} />
+                            <Image src="https://cdn.bond.az/assets/icons/google-play.svg" alt="Google Play" title="Bond.az Google Play" width={85} height={40} />
+                            <Image src="https://cdn.bond.az/assets/icons/app-gallery.svg" alt="App Gallery" title="Bond.az App Gallery" width={85} height={40} />
                         </div>
                     </div>
                 </div>
@@ -161,8 +161,8 @@ export default function Footer() {
                 <div className="footer-h-legal-bar">
                     <Link href={getLocalizedPath("/terms")} className="footer-h-legal-link">{t.terms}</Link>
                     <Link href={getLocalizedPath("/privacy")} className="footer-h-legal-link">{t.privacy}</Link>
-                    <Link href="#" className="footer-h-legal-link">{lang === 'az' ? 'Çərəz Siyasəti' : 'Cookie Policy'}</Link>
-                    <Link href="#" className="footer-h-legal-link">{lang === 'az' ? 'Reklam' : 'Advertising'}</Link>
+                    <Link href="#" className="footer-h-legal-link" aria-label={lang === 'az' ? 'Çərəz Siyasəti Səhifəsi' : 'Cookie Policy Page'}>{lang === 'az' ? 'Çərəz Siyasəti' : 'Cookie Policy'}</Link>
+                    <Link href="#" className="footer-h-legal-link" aria-label={lang === 'az' ? 'Reklam Səhifəsi' : 'Advertising Page'}>{lang === 'az' ? 'Reklam' : 'Advertising'}</Link>
                 </div>
 
                 {/* 5. Bottom SEO */}

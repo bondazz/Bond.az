@@ -49,10 +49,16 @@ export default function AdSlot({ slotId, className, width = 300, height = 300 }:
     return (
         <div className={`ad-slot-container ${className || ''}`} id={`ad-slot-${slotId}`}>
             {ad.type === 'image' ? (
-                <Link href={ad.link_url || '#'} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
+                <Link 
+                    href={ad.link_url || '#'} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="block w-full h-full"
+                    aria-label={`Reklam - ${slotId.replace('_', ' ')}`}
+                >
                     <Image 
                         src={ad.content} 
-                        alt="Reklam" 
+                        alt={`Reklam: ${slotId.replace('_', ' ')}`} 
                         width={width} 
                         height={height} 
                         className="w-full h-full object-contain"

@@ -77,9 +77,11 @@ const PostCard = ({ post, isOverlay = false, isSmall = false, lang: propLang }: 
                         width={800} 
                         height={450} 
                         priority={isOverlay} 
-                        loading={isOverlay ? "eager" : "lazy"}
-                        {...(isOverlay ? { fetchPriority: "high" } : {})}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        {...(isOverlay ? { fetchPriority: "high" } : { loading: "lazy" })}
+                        sizes={isOverlay 
+                            ? "(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 1100px" 
+                            : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        }
                         className="post-main-img"
                     />
                 </Link>
