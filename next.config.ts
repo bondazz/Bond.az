@@ -27,6 +27,14 @@ const nextConfig: NextConfig = {
         source: '/posts-sitemap-:id.xml',
         destination: '/api/sitemaps/posts?id=:id',
       },
+      {
+        source: '/tags-sitemap-:id.xml',
+        destination: '/api/sitemaps/tags?id=:id',
+      },
+      {
+        source: '/images-sitemap-:id.xml',
+        destination: '/api/sitemaps/images?id=:id',
+      },
     ];
   },
   async headers() {

@@ -5,23 +5,29 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const POSTS_PER_SITEMAP = 1000;
+const PER_SITEMAP = 1000;
 
 export async function GET() {
   const baseUrl = 'https://bond.az';
   const now = new Date().toISOString();
 
-  // 1. Get total posts count to calculate chunks
-  const { count: totalPosts } = await supabase
-    .from('posts')
-    .select('*', { count: 'exact', head: true });
+  // 1. Fetch counts in parallel for performance
+  const [postsCount, tagsCount, imagesCount] = await Promise.all([
+    supabase.from('posts').select('*', { count: 'exact', head: true }),
+    supabase.from('tags').select('*', { count: 'exact', head: true }),
+    supabase.from('posts').select('image', { count: 'exact', head: true }).not('image', 'is', null)
+  ]);
 
-  const postsSitemapCount = Math.ceil((totalPosts || 0) / POSTS_PER_SITEMAP);
+  // 2. Calculate chunk counts
+  const postsSitemapCount = Math.ceil((postsCount.count || 0) / PER_SITEMAP);
+  const tagsSitemapCount = Math.ceil((tagsCount.count || 0) / PER_SITEMAP);
+  const imagesSitemapCount = Math.ceil((imagesCount.count || 0) / PER_SITEMAP);
 
-  // 2. Generate Posts Sitemap links
-  const postsSitemaps = Array.from({ length: postsSitemapCount }, (_, i) => `
+  // 3. Generate Sitemap link helpers
+  const generateSitemaps = (prefix: string, count: number) => 
+    Array.from({ length: count }, (_, i) => `
   <sitemap>
-    <loc>${baseUrl}/posts-sitemap-${i + 1}.xml</loc>
+    <loc>${baseUrl}/${prefix}-sitemap-${i + 1}.xml</loc>
     <lastmod>${now}</lastmod>
   </sitemap>`).join('');
 
@@ -35,15 +41,13 @@ export async function GET() {
     <loc>${baseUrl}/categories-sitemap.xml</loc>
     <lastmod>${now}</lastmod>
   </sitemap>
-  ${postsSitemaps}
   <sitemap>
-    <loc>${baseUrl}/images-sitemap.xml</loc>
+    <loc>${baseUrl}/news-sitemap.xml</loc>
     <lastmod>${now}</lastmod>
   </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/tags-sitemap.xml</loc>
-    <lastmod>${now}</lastmod>
-  </sitemap>
+  ${generateSitemaps('posts', postsSitemapCount)}
+  ${generateSitemaps('tags', tagsSitemapCount)}
+  ${generateSitemaps('images', imagesSitemapCount)}
 </sitemapindex>`;
 
   return new Response(sitemapIndex, {
