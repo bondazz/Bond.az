@@ -122,6 +122,7 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    align-items: center; /* Hamısı eyni xətt üzərində olsun */
 }
 
 .footer-h-social-icon {
@@ -148,7 +149,96 @@
 .icon-yt { background: #ff0000; }
 .icon-wa { background: #25d366; }
 .icon-tg { background: #0088cc; }
-.icon-rss { background: #f26522; }
+.icon-rss { 
+    --rss-accent: #ed2127; /* Gündüz qırmızı */
+    background: rgba(242, 101, 34, 0.05);
+    margin-left: 25px;
+    padding: 0 18px;
+    height: 32px; /* Digər ikonlarla eyni hərəkət etsin */
+    width: auto;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 2px solid var(--rss-accent);
+    position: relative;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+}
+
+/* Gecə rejimi üçün mavi border */
+html.dark .icon-rss {
+    --rss-accent: #3b82f6; /* Gecə mavi */
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.rss-text {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-main);
+    transition: color 0.3s ease;
+}
+
+.icon-rss svg {
+    color: #f26522; /* İkon həmişə klassik RSS rəngində qalsın */
+    transition: transform 0.3s ease;
+}
+
+.icon-rss:hover {
+    transform: translateY(-5px);
+    background: var(--rss-accent);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.icon-rss:hover .rss-text,
+.icon-rss:hover svg {
+    color: white;
+}
+
+.icon-rss:hover svg {
+    transform: rotate(15deg);
+}
+
+/* Sol tərəfdəki separatoru daha zərif edək */
+.icon-rss::before {
+    content: "";
+    position: absolute;
+    left: -15px;
+    height: 20px;
+    width: 1px;
+    background: var(--card-border);
+}
+/* --- RSS Wifi Animation --- */
+@keyframes rssWave {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+.rss-dot {
+    color: #f26522;
+}
+
+.rss-wave-1 {
+    animation: rssWave 2s infinite ease-in-out;
+    opacity: 0.3;
+}
+
+.rss-wave-2 {
+    animation: rssWave 2s infinite ease-in-out;
+    animation-delay: 0.4s; /* Dalğalar ardıcıl hərəkət etsin */
+    opacity: 0.3;
+}
+
+.icon-rss:hover .rss-wave-1,
+.icon-rss:hover .rss-wave-2 {
+    animation-duration: 0.8s; /* Hover edəndə daha sürətli parlasın */
+}
 
 .footer-h-apps {
     display: flex;

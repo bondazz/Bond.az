@@ -32,11 +32,11 @@ export default function Footer() {
         {
             title: lang === 'az' ? 'Xəbərlər' : 'News',
             links: [
-                { name: t.politics, href: lang === 'az' ? "/siyaset" : `/${lang}/politics` },
-                { name: t.business, href: lang === 'az' ? "/biznes" : `/${lang}/business` },
                 { name: t.economy, href: lang === 'az' ? "/iqtisadiyyat" : `/${lang}/economy` },
-                { name: t.travel, href: lang === 'az' ? "/seyahat" : `/${lang}/travel` },
-                { name: t.currencies, href: getLocalizedPath("/currencies") },
+                { name: lang === 'az' ? 'Siyasət' : 'Politics', href: lang === 'az' ? "/siyaset" : `/${lang}/politics` },
+                { name: lang === 'az' ? 'Dünya' : 'World', href: lang === 'az' ? "/dunya" : `/${lang}/world` },
+                { name: lang === 'az' ? 'Cəmiyyət' : 'Society', href: lang === 'az' ? "/cemiyyet" : `/${lang}/society` },
+                { name: t.business, href: lang === 'az' ? "/biznes" : `/${lang}/business` },
             ]
         },
         {
@@ -141,11 +141,14 @@ export default function Footer() {
                         <h4 className="footer-h-action-title">{lang === 'az' ? 'BİZİ İZLƏYİN' : 'FOLLOW US'}</h4>
                         <div className="footer-h-social-list">
                             <Link href="#" className="footer-h-social-icon icon-fb" aria-label="Facebook"><FacebookIcon /></Link>
-                            <Link href="#" className="footer-h-social-icon icon-tw" aria-label="X (Twitter)"><XIcon /></Link>
+                            <Link href="https://x.com/TheBondMedia" target="_blank" rel="noopener noreferrer" className="footer-h-social-icon icon-tw" aria-label="X (Twitter)"><XIcon /></Link>
                             <Link href="#" className="footer-h-social-icon icon-ig" aria-label="Instagram"><InstagramIcon /></Link>
                             <Link href="#" className="footer-h-social-icon icon-li" aria-label="LinkedIn"><LinkedinIcon /></Link>
                             <Link href="#" className="footer-h-social-icon icon-yt" aria-label="YouTube"><YoutubeIcon /></Link>
-                            <Link href={getLocalizedPath("/rss.xml")} className="footer-h-social-icon icon-rss" aria-label="RSS Feed"><RssIcon /></Link>
+                            <Link href={`/${lang}/rss.xml`} className="footer-h-social-icon icon-rss" aria-label="RSS Feed">
+                                <RssIcon />
+                                <span className="rss-text">RSS Feed</span>
+                            </Link>
                         </div>
                     </div>
                     <div className="footer-h-action-box">
@@ -185,4 +188,10 @@ const XIcon = () => <svg width="16" height="16" fill="currentColor" viewBox="0 0
 const InstagramIcon = () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
 const LinkedinIcon = () => <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 2a2 2 0 1 1-2 2 2 2 0 0 1 2-2z"></path></svg>;
 const YoutubeIcon = () => <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.42 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.42-5.58z"></path><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon></svg>;
-const RssIcon = () => <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>;
+const RssIcon = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="5" cy="19" r="1" fill="currentColor" className="rss-dot" />
+        <path d="M4 11a9 9 0 0 1 9 9" className="rss-wave-1" />
+        <path d="M4 4a16 16 0 0 1 16 16" className="rss-wave-2" />
+    </svg>
+);

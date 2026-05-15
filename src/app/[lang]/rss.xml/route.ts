@@ -7,11 +7,28 @@ const supabase = createClient(
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ lang: string }> } // Next.js 15 pattern
+  { params }: { params: Promise<{ lang: string }> }
 ) {
-  const { lang } = await params; // Await params
+  const { lang } = await params;
 
-  // Seçilmiş dilə uyğun ən son 50 xəbəri çəkirik
+  // SEO Metadata per language
+  const meta: any = {
+    az: {
+      title: 'Bond.az - Ən Son Xəbərlər (RSS)',
+      description: 'Azərbaycanın ən son iqtisadiyyat, maliyyə və biznes xəbərləri lenti.',
+    },
+    en: {
+      title: 'Bond.az - Latest News (RSS)',
+      description: 'The latest economy, finance, and business news feed from Azerbaijan and the world.',
+    },
+    ru: {
+      title: 'Bond.az - Последние новости (RSS)',
+      description: 'Лента последних новостей экономики, финансов и бизнеса Азербайджана и мира.',
+    }
+  };
+
+  const currentMeta = meta[lang] || meta.az;
+
   const { data: posts, error } = await supabase
     .from('posts')
     .select('title, slug, category_slug, image, summary, content, date, lang, author')
@@ -20,15 +37,12 @@ export async function GET(
     .limit(50);
 
   if (error || !posts) {
-    console.error('RSS Fetch Error:', error);
     return new Response('Error fetching posts', { status: 500 });
   }
 
   const rssItems = posts.map((post) => {
     const langPrefix = post.lang === 'az' ? '' : `/${post.lang}`;
     const url = `https://bond.az${langPrefix}/${post.category_slug}/${post.slug}`;
-    
-    // Xəbərin tam mətni və sonunda dofollow link
     const footer = `<br/><br/><hr/><strong>Mənbə:</strong> <a href="${url}">Bond.az</a>`;
     const description = `${post.summary}${footer}`;
 
@@ -52,12 +66,17 @@ export async function GET(
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Bond.az - ${lang.toUpperCase()} News</title>
+    <title>${currentMeta.title}</title>
     <link>https://bond.az/${lang}</link>
-    <description>Azərbaycanın ən son iqtisadiyyat və maliyyə xəbərləri portalı</description>
+    <description>${currentMeta.description}</description>
     <language>${lang}</language>
     <atom:link href="https://bond.az/${lang}/rss.xml" rel="self" type="application/rss+xml" />
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <image>
+      <url>https://bond.az/bond_logo_black.png</url>
+      <title>${currentMeta.title}</title>
+      <link>https://bond.az/${lang}</link>
+    </image>
     ${rssItems}
   </channel>
 </rss>`;

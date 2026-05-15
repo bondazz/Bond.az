@@ -4,13 +4,29 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
-    const [activeTab, setActiveTab] = useState<'posts' | 'authors' | 'ads'>('posts');
+    const [activeTab, setActiveTab] = useState<'posts' | 'authors' | 'ads' | 'categories'>('posts');
     const [stats, setStats] = useState({ totalPosts: 0, totalViews: 0, categories: 0 });
     const [posts, setPosts] = useState<any[]>([]);
     const [authors, setAuthors] = useState<any[]>([]);
     const [ads, setAds] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [botLoading, setBotLoading] = useState(false);
+    
+    // Category Form State
+    const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+    const [editingCategory, setEditingCategory] = useState<any>(null);
+    const [categoryForm, setCategoryForm] = useState({ 
+        name: '', 
+        slug: '', 
+        lang: 'az', 
+        common_slug: '',
+        seo_title: '', 
+        seo_description: '', 
+        content: '',
+        og_title: '',
+        og_desc: ''
+    });
     
     // Author Form State
     const [isAuthorModalOpen, setIsAuthorModalOpen] = useState(false);
@@ -41,6 +57,9 @@ export default function AdminDashboard() {
             } else if (activeTab === 'authors') {
                 const authorsRes = await fetch('/api/admin/authors');
                 if (authorsRes.ok) setAuthors(await authorsRes.json());
+            } else if (activeTab === 'categories') {
+                const catRes = await fetch('/api/admin/categories');
+                if (catRes.ok) setCategories(await catRes.json());
             } else {
                 const adsRes = await fetch('/api/admin/ads');
                 if (adsRes.ok) setAds(await adsRes.json());
@@ -139,6 +158,40 @@ export default function AdminDashboard() {
         fetchData();
     };
 
+    const handleCategorySubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSaving(true);
+        const method = editingCategory ? 'PUT' : 'POST';
+        const url = editingCategory ? `/api/admin/categories/${editingCategory.id}` : '/api/admin/categories';
+
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(categoryForm)
+            });
+            
+            if (res.ok) {
+                setIsCategoryModalOpen(false);
+                setEditingCategory(null);
+                fetchData();
+            } else {
+                const errorData = await res.json();
+                alert(`Xəta: ${errorData.error || 'Məlumat yadda saxlanılmadı'}`);
+            }
+        } catch (err: any) {
+            alert(`Sistem xətası: ${err.message || 'Bilinməyən xəta'}`);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleDeleteCategory = async (id: string) => {
+        if (!confirm('Kateqoriyanı silmək istəyirsiniz?')) return;
+        await fetch(`/api/admin/categories/${id}`, { method: 'DELETE' });
+        fetchData();
+    };
+
     const handleRunBot = async () => {
         setBotLoading(true);
         try {
@@ -178,6 +231,12 @@ export default function AdminDashboard() {
                             className={`text-xs uppercase tracking-widest font-bold ${activeTab === 'authors' ? 'text-white' : 'text-gray-500'}`}
                         >
                             Müəlliflər
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('categories')}
+                            className={`text-xs uppercase tracking-widest font-bold ${activeTab === 'categories' ? 'text-white' : 'text-gray-500'}`}
+                        >
+                            Kateqoriyalar
                         </button>
                         <button 
                             onClick={() => setActiveTab('ads')}
@@ -220,7 +279,7 @@ export default function AdminDashboard() {
                 <div className="bg-[#111] border border-white/5 rounded-2xl overflow-hidden">
                     <div className="p-6 border-b border-white/5 flex justify-between items-center">
                         <h3 className="font-bold">
-                            {activeTab === 'posts' ? 'Son Xəbərlər' : activeTab === 'authors' ? 'Müəlliflər' : 'Reklam Meneceri'}
+                            {activeTab === 'posts' ? 'Son Xəbərlər' : activeTab === 'authors' ? 'Müəlliflər' : activeTab === 'categories' ? 'Kateqoriyalar' : 'Reklam Meneceri'}
                         </h3>
                         {activeTab === 'authors' && (
                             <button 
@@ -228,6 +287,18 @@ export default function AdminDashboard() {
                                 className="bg-white/10 hover:bg-white/20 text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
                             >
                                 YENİ MÜƏLLİF
+                            </button>
+                        )}
+                        {activeTab === 'categories' && (
+                            <button 
+                                onClick={() => { 
+                                    setEditingCategory(null); 
+                                    setCategoryForm({ name: '', slug: '', lang: 'az', common_slug: '', seo_title: '', seo_description: '', content: '', og_title: '', og_desc: '' }); 
+                                    setIsCategoryModalOpen(true); 
+                                }}
+                                className="bg-white/10 hover:bg-white/20 text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
+                            >
+                                YENİ KATEQORİYA
                             </button>
                         )}
                         {activeTab === 'ads' && (
@@ -295,6 +366,46 @@ export default function AdminDashboard() {
                                                 <td className="px-6 py-4 text-right">
                                                     <button onClick={() => { setEditingAuthor(author); setAuthorForm({ name: author.name, job_title: author.job_title, lang: author.lang, avatar: author.avatar }); setIsAuthorModalOpen(true); }} className="text-gray-500 hover:text-white mr-4">Redaktə</button>
                                                     <button onClick={() => handleDeleteAuthor(author.id)} className="text-gray-500 hover:text-red-500">Sil</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </>
+                            ) : activeTab === 'categories' ? (
+                                <>
+                                    <thead>
+                                        <tr className="text-xs text-gray-500 uppercase tracking-widest border-b border-white/5">
+                                            <th className="px-6 py-4 font-medium">Ad</th>
+                                            <th className="px-6 py-4 font-medium">Slug</th>
+                                            <th className="px-6 py-4 font-medium">Dil</th>
+                                            <th className="px-6 py-4 font-medium text-right">Əməliyyat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-white/5">
+                                        {categories.map((cat) => (
+                                            <tr key={cat.id} className="hover:bg-white/[0.02]">
+                                                <td className="px-6 py-4">
+                                                    <div className="text-sm font-medium">{cat.name}</div>
+                                                </td>
+                                                <td className="px-6 py-4 text-sm text-gray-400">{cat.slug}</td>
+                                                <td className="px-6 py-4 text-xs uppercase font-bold text-gray-500">{cat.lang}</td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <button onClick={() => { 
+                                                        setEditingCategory(cat); 
+                                                        setCategoryForm({ 
+                                                            name: cat.name, 
+                                                            slug: cat.slug, 
+                                                            lang: cat.lang, 
+                                                            common_slug: cat.common_slug || '',
+                                                            seo_title: cat.seo_title || '', 
+                                                            seo_description: cat.seo_description || '', 
+                                                            content: cat.content || '',
+                                                            og_title: cat.og_title || '',
+                                                            og_desc: cat.og_desc || ''
+                                                        }); 
+                                                        setIsCategoryModalOpen(true); 
+                                                    }} className="text-gray-500 hover:text-white mr-4">Redaktə</button>
+                                                    <button onClick={() => handleDeleteCategory(cat.id)} className="text-gray-500 hover:text-red-500">Sil</button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -542,6 +653,114 @@ export default function AdminDashboard() {
                                     className="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl text-sm font-bold transition-all"
                                 >
                                     {isSaving ? '...' : 'REKLAMI YADDA SAXLA'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            {/* Category Modal */}
+            {isCategoryModalOpen && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+                    <div className="bg-[#111] border border-white/10 w-full max-w-2xl rounded-2xl p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+                        <h2 className="text-xl font-bold mb-6">{editingCategory ? 'Kateqoriyanı Redaktə Et' : 'Yeni Kateqoriya'}</h2>
+                        <form onSubmit={handleCategorySubmit} className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Ad</label>
+                                    <input 
+                                        type="text" 
+                                        value={categoryForm.name} 
+                                        onChange={e => setCategoryForm({...categoryForm, name: e.target.value})}
+                                        className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Slug (URL)</label>
+                                    <input 
+                                        type="text" 
+                                        value={categoryForm.slug} 
+                                        onChange={e => setCategoryForm({...categoryForm, slug: e.target.value})}
+                                        className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Dil</label>
+                                    <select 
+                                        value={categoryForm.lang} 
+                                        onChange={e => setCategoryForm({...categoryForm, lang: e.target.value})}
+                                        className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none appearance-none"
+                                    >
+                                        <option value="az">AZ</option>
+                                        <option value="en">EN</option>
+                                        <option value="ru">RU</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Common Slug (Dillər arası əlaqə)</label>
+                                    <input 
+                                        type="text" 
+                                        value={categoryForm.common_slug} 
+                                        onChange={e => setCategoryForm({...categoryForm, common_slug: e.target.value})}
+                                        className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        placeholder="iqtisadiyyat"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="border-t border-white/5 pt-4">
+                                <h4 className="text-xs font-bold text-red-500 uppercase tracking-widest mb-4">SEO AYARLARI</h4>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">SEO Title</label>
+                                        <input 
+                                            type="text" 
+                                            value={categoryForm.seo_title} 
+                                            onChange={e => setCategoryForm({...categoryForm, seo_title: e.target.value})}
+                                            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">SEO Description</label>
+                                        <textarea 
+                                            value={categoryForm.seo_description} 
+                                            onChange={e => setCategoryForm({...categoryForm, seo_description: e.target.value})}
+                                            rows={3}
+                                            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Kateqoriya Mətni (HTML)</label>
+                                <textarea 
+                                    value={categoryForm.content} 
+                                    onChange={e => setCategoryForm({...categoryForm, content: e.target.value})}
+                                    rows={6}
+                                    className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none font-mono text-[12px]"
+                                />
+                            </div>
+
+                            <div className="flex gap-4 pt-4">
+                                <button 
+                                    type="button" 
+                                    onClick={() => setIsCategoryModalOpen(false)}
+                                    className="flex-1 bg-white/5 hover:bg-white/10 py-3 rounded-xl text-sm font-bold transition-all"
+                                >
+                                    İMTİNA
+                                </button>
+                                <button 
+                                    type="submit"
+                                    disabled={isSaving}
+                                    className="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl text-sm font-bold shadow-lg shadow-red-900/20 transition-all disabled:opacity-50"
+                                >
+                                    {isSaving ? '...' : 'YADDA SAXLA'}
                                 </button>
                             </div>
                         </form>
