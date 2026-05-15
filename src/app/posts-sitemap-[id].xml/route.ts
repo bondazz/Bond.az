@@ -5,19 +5,27 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function GET() {
-  const baseUrl = 'https://bond.az';
+const POSTS_PER_SITEMAP = 1000;
+
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
   
-  // Fetch latest 1000 posts with images
+  // Extract number from "posts-sitemap-1.xml" or just "1"
+  const pageMatch = id.match(/(\d+)/);
+  const page = pageMatch ? parseInt(pageMatch[1]) : 1;
+  const offset = (page - 1) * POSTS_PER_SITEMAP;
+
   const { data: posts, error } = await supabase
     .from('posts')
-    .select('image, title, date, lang, category_slug, slug')
-    .not('image', 'is', null)
+    .select('slug, category_slug, date, lang, image, title')
     .order('date', { ascending: false })
-    .limit(1000);
+    .range(offset, offset + POSTS_PER_SITEMAP - 1);
 
   if (error || !posts) {
-    return new Response('Error fetching images', { status: 500 });
+    return new Response('Error fetching posts', { status: 500 });
   }
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -25,15 +33,20 @@ export async function GET() {
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   ${posts.map((post) => {
     const langPrefix = post.lang === 'az' ? '' : `/${post.lang}`;
-    const postUrl = `${baseUrl}${langPrefix}/${post.category_slug}/${post.slug}`;
+    const url = `https://bond.az${langPrefix}/${post.category_slug}/${post.slug}`;
+    const postDate = new Date(post.date).toISOString();
+    
     return `
     <url>
-      <loc>${postUrl}</loc>
+      <loc>${url}</loc>
+      <lastmod>${postDate}</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+      ${post.image ? `
       <image:image>
-        <image:loc>${post.loc || post.image}</image:loc>
+        <image:loc>${post.image}</image:loc>
         <image:title><![CDATA[${post.title}]]></image:title>
-        <image:caption><![CDATA[${post.title}]]></image:caption>
-      </image:image>
+      </image:image>` : ''}
     </url>`;
   }).join('')}
 </urlset>`;

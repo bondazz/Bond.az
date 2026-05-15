@@ -70,15 +70,19 @@ async function getAuthorBySlug(slug: string) {
     return data;
 }
 
-async function getPostsByAuthor(authorId: number, lang: string) {
+async function getPostsByAuthor(authorId: number, authorName: string, lang: string) {
+    // Simplified query to avoid potential join issues
     const { data, error } = await supabase
         .from('posts')
-        .select('*, authors(name, avatar, job_title, slug)')
-        .eq('author_id', authorId)
+        .select('*')
+        .or(`author_id.eq.${authorId},author.eq."${authorName}"`)
         .eq('lang', lang)
         .order('id', { ascending: false });
 
-    if (error) return [];
+    if (error) {
+        console.error('Fetch posts error:', error);
+        return [];
+    }
 
     return data.map(p => ({
         id: p.id,
@@ -90,10 +94,10 @@ async function getPostsByAuthor(authorId: number, lang: string) {
         summary: p.summary,
         date: p.date,
         lang: p.lang,
-        author: p.authors?.name || p.author,
-        authorAvatar: p.authors?.avatar,
-        authorJobTitle: p.authors?.job_title,
-        authorSlug: p.authors?.slug,
+        author: p.author,
+        authorAvatar: null, // Will use author data from page level
+        authorJobTitle: null,
+        authorSlug: null,
         likes: p.likes || 0,
         dislikes: p.dislikes || 0,
         views: p.views || 0,
@@ -107,7 +111,13 @@ export default async function AuthorPage({ params }: { params: Promise<{ lang: s
 
     if (!author) notFound();
 
-    const authorPosts = await getPostsByAuthor(author.id, lang);
+    const rawPosts = await getPostsByAuthor(author.id, author.name, lang);
+    const authorPosts = rawPosts.map(p => ({
+        ...p,
+        authorAvatar: author.avatar,
+        authorJobTitle: author.job_title,
+        authorSlug: author.slug
+    }));
     const t = translations[lang as Locale] || translations.az;
 
     return (
