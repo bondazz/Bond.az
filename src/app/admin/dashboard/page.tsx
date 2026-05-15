@@ -348,6 +348,7 @@ export default function AdminDashboard() {
                                         <tr className="text-xs text-gray-500 uppercase tracking-widest border-b border-white/5">
                                             <th className="px-6 py-4 font-medium">Müəllif</th>
                                             <th className="px-6 py-4 font-medium">Vəzifə</th>
+                                            <th className="px-6 py-4 font-medium">Email</th>
                                             <th className="px-6 py-4 font-medium">Dil</th>
                                             <th className="px-6 py-4 font-medium text-right">Əməliyyat</th>
                                         </tr>
@@ -362,6 +363,7 @@ export default function AdminDashboard() {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-400">{author.job_title}</td>
+                                                <td className="px-6 py-4 text-sm text-gray-500 font-mono">{author.email}</td>
                                                 <td className="px-6 py-4 text-xs uppercase font-bold text-gray-500">{author.lang}</td>
                                                 <td className="px-6 py-4 text-right">
                                                     <button onClick={() => { setEditingAuthor(author); setAuthorForm({ name: author.name, job_title: author.job_title, lang: author.lang, avatar: author.avatar }); setIsAuthorModalOpen(true); }} className="text-gray-500 hover:text-white mr-4">Redaktə</button>
