@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { NextRequest } from 'next/server';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,19 +8,11 @@ const supabase = createClient(
 
 const POSTS_PER_SITEMAP = 1000;
 
-// Use 'any' for context to bypass strict Next.js dynamic route type checking
-// which can be picky about .xml in folder names
-export async function GET(
-  request: Request,
-  context: any
-) {
-  // We'll parse the page number from the URL directly as a fallback 
-  // because Next.js might not populate params.id if the folder name is complex
-  const url = new URL(request.url);
-  const pathname = url.pathname;
-  const pageMatch = pathname.match(/posts-sitemap-(\d+)\.xml/);
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
   
-  const page = pageMatch ? parseInt(pageMatch[1]) : 1;
+  const page = id ? parseInt(id) : 1;
   const offset = (page - 1) * POSTS_PER_SITEMAP;
 
   const { data: posts, error } = await supabase

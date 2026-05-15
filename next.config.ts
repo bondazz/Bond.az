@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'dicons'],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/posts-sitemap-:id.xml',
+        destination: '/api/sitemaps/posts?id=:id',
+      },
+    ];
+  },
   async headers() {
     return [
       {
