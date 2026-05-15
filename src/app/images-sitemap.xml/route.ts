@@ -30,7 +30,7 @@ export async function GET() {
     <url>
       <loc>${postUrl}</loc>
       <image:image>
-        <image:loc>${post.loc || post.image}</image:loc>
+        <image:loc>${post.image}</image:loc>
         <image:title><![CDATA[${post.title}]]></image:title>
         <image:caption><![CDATA[${post.title}]]></image:caption>
       </image:image>
