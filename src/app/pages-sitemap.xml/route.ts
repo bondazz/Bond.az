@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const baseUrl = 'https://bond.az';
   const now = new Date().toISOString();

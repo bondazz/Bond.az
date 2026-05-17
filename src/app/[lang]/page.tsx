@@ -75,8 +75,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function LangHomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   const siteUrl = "https://bond.az";
-  const posts = await getPosts();
-  const latestPosts = posts.filter(p => p.lang === lang).slice(0, 10);
+  const posts = await getPosts(lang);
+  const latestPosts = posts.slice(0, 10);
 
   // 1. Organization Schema
   const orgSchema = {
