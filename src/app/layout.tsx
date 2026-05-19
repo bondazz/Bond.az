@@ -39,6 +39,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     images: ['/bond_brand.webp'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    'max-image-preview': 'large',
   }
 };
 
@@ -92,6 +97,22 @@ export default async function RootLayout({
               gtag('js', new Date());
               gtag('config', 'G-4Y82BEZ0BR');
             `,
+          }}
+        />
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "url": "https://bond.az/",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://bond.az/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            })
           }}
         />
         <ThemeProvider>

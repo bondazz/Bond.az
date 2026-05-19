@@ -54,6 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         robots: {
             index: true,
             follow: true,
+            'max-image-preview': 'large',
         }
     };
 }

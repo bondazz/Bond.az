@@ -43,6 +43,7 @@ export const metadata: Metadata = {
         index: true,
         follow: true,
         nocache: true,
+        'max-image-preview': 'large',
         googleBot: {
             index: true,
             follow: true,

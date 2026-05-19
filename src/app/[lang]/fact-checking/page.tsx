@@ -26,7 +26,19 @@ const factContent = {
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
     const content = (factContent as any)[lang] || factContent.az;
-    return { title: `${content.title} - Bond.az`, description: content.intro };
+    const url = `https://bond.az/${lang}/fact-checking`;
+    return {
+        title: `${content.title} - Bond.az`,
+        description: content.intro,
+        alternates: {
+            canonical: url,
+        },
+        robots: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+        }
+    };
 }
 
 export default async function FactCheckingPage({ params }: { params: Promise<{ lang: string }> }) {

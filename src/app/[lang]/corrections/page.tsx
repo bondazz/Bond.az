@@ -92,7 +92,19 @@ const policyContent = {
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
     const content = (policyContent as any)[lang] || policyContent.az;
-    return { title: `${content.title} — Bond.az`, description: content.intro };
+    const url = `https://bond.az/${lang}/corrections`;
+    return {
+        title: `${content.title} — Bond.az`,
+        description: content.intro,
+        alternates: {
+            canonical: url,
+        },
+        robots: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+        }
+    };
 }
 
 export default async function CorrectionsPage({ params }: { params: Promise<{ lang: string }> }) {

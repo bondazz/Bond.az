@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
 
+User-agent: Googlebot-News
+Allow: /
+
 Sitemap: https://bond.az/sitemap.xml
 Sitemap: https://bond.az/news-sitemap.xml

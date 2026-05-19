@@ -65,6 +65,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         robots: {
             index: true,
             follow: true,
+            'max-image-preview': 'large',
             googleBot: {
                 index: true,
                 follow: true,
@@ -118,7 +119,14 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
                                 "@context": "https://schema.org",
                                 "@type": "NewsArticle",
                                 "headline": post.title,
-                                "image": [post.image],
+                                "image": [
+                                    {
+                                        "@type": "ImageObject",
+                                        "url": post.image,
+                                        "width": 1200,
+                                        "height": 630
+                                    }
+                                ],
                                 "datePublished": post.date,
                                 "dateModified": post.updated_at || post.date,
                                 "author": [{
@@ -127,7 +135,7 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
                                     "url": `https://bond.az/author/${post.authorSlug}`
                                 }],
                                 "publisher": {
-                                    "@type": "NewsMediaOrganization",
+                                    "@type": ["NewsMediaOrganization", "Organization"],
                                     "name": "Bond.az",
                                     "logo": {
                                         "@type": "ImageObject",
@@ -137,6 +145,14 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
                                     }
                                 },
                                 "description": post.summary,
+                                "video": {
+                                    "@type": "VideoObject",
+                                    "name": post.title,
+                                    "description": post.summary,
+                                    "thumbnailUrl": [post.image],
+                                    "uploadDate": post.date,
+                                    "contentUrl": `https://bond.az/${lang}/${category}/${slug}`
+                                },
                                 "mainEntityOfPage": {
                                     "@type": "WebPage",
                                     "@id": `https://bond.az/${lang}/${category}/${slug}`
