@@ -54,6 +54,7 @@ export default async function RootLayout({
   return (
     <html lang={lang} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${montserrat.variable} h-full antialiased`}>
       <head>
+        <meta name="yandex-verification" content="16fb14240674baf8" />
         <link rel="preconnect" href="https://cdn.bond.az" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.bond.az" />
         <Script
@@ -77,6 +78,22 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-4Y82BEZ0BR"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-4Y82BEZ0BR');
+            `,
+          }}
+        />
         <ThemeProvider>
           <Header initialLang={lang as Locale} initialPosts={initialTickerPosts} />
           <main className="flex-1">
