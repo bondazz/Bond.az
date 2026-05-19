@@ -54,6 +54,8 @@ export default async function RootLayout({
 }>) {
   const headerList = await headers();
   const lang = headerList.get('x-lang') || 'az';
+  const pathname = headerList.get('x-pathname') || '';
+  const isAdmin = pathname.startsWith('/admin');
   const initialTickerPosts = await getPosts(lang, undefined, 1, 10);
 
   return (
@@ -116,11 +118,11 @@ export default async function RootLayout({
           }}
         />
         <ThemeProvider>
-          <Header initialLang={lang as Locale} initialPosts={initialTickerPosts} />
+          {!isAdmin && <Header initialLang={lang as Locale} initialPosts={initialTickerPosts} />}
           <main className="flex-1">
             {children}
           </main>
-          <Footer />
+          {!isAdmin && <Footer />}
         </ThemeProvider>
       </body>
     </html>

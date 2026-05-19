@@ -13,10 +13,17 @@ export async function proxy(request: NextRequest) {
         return NextResponse.next();
     }
 
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-pathname', pathname);
+
     // Admin paneli üçün qoruma
     if (pathname.startsWith('/admin')) {
         if (pathname === '/admin/login') {
-            return NextResponse.next();
+            return NextResponse.next({
+                request: {
+                    headers: requestHeaders
+                }
+            });
         }
         
         const token = request.cookies.get('admin_session')?.value;
@@ -52,25 +59,41 @@ export async function proxy(request: NextRequest) {
             return response;
         }
         
-        return NextResponse.next();
+        return NextResponse.next({
+            request: {
+                headers: requestHeaders
+            }
+        });
     }
 
     // Dil yönləndirmələri
     if (!pathname.startsWith('/en') && !pathname.startsWith('/ru')) {
         if (!pathname.startsWith('/az')) {
             const url = new URL(`/az${pathname}${search}`, request.url);
-            const response = NextResponse.rewrite(url);
-            response.headers.set('x-lang', 'az');
+            requestHeaders.set('x-lang', 'az');
+            const response = NextResponse.rewrite(url, {
+                request: {
+                    headers: requestHeaders
+                }
+            });
             return response;
         }
-        const response = NextResponse.next();
-        response.headers.set('x-lang', 'az');
+        requestHeaders.set('x-lang', 'az');
+        const response = NextResponse.next({
+            request: {
+                headers: requestHeaders
+            }
+        });
         return response;
     }
 
     const lang = pathname.startsWith('/en') ? 'en' : 'ru';
-    const response = NextResponse.next();
-    response.headers.set('x-lang', lang);
+    requestHeaders.set('x-lang', lang);
+    const response = NextResponse.next({
+        request: {
+            headers: requestHeaders
+        }
+    });
     return response;
 }
 
