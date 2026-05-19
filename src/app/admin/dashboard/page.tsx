@@ -31,7 +31,17 @@ export default function AdminDashboard() {
     // Author Form State
     const [isAuthorModalOpen, setIsAuthorModalOpen] = useState(false);
     const [editingAuthor, setEditingAuthor] = useState<any>(null);
-    const [authorForm, setAuthorForm] = useState({ name: '', job_title: '', lang: 'az', avatar: '' });
+    const [authorForm, setAuthorForm] = useState({
+        name: '',
+        job_title: '',
+        lang: 'az',
+        avatar: '',
+        x_url: '',
+        linkedin_url: '',
+        facebook_url: '',
+        instagram_url: '',
+        website_url: ''
+    });
     
     // Ads Form State
     const [isAdModalOpen, setIsAdModalOpen] = useState(false);
@@ -139,7 +149,17 @@ export default function AdminDashboard() {
             if (res.ok) {
                 setIsAuthorModalOpen(false);
                 setEditingAuthor(null);
-                setAuthorForm({ name: '', job_title: '', lang: 'az', avatar: '' });
+                setAuthorForm({
+                    name: '',
+                    job_title: '',
+                    lang: 'az',
+                    avatar: '',
+                    x_url: '',
+                    linkedin_url: '',
+                    facebook_url: '',
+                    instagram_url: '',
+                    website_url: ''
+                });
                 fetchData();
             } else {
                 const errorData = await res.json();
@@ -283,7 +303,21 @@ export default function AdminDashboard() {
                         </h3>
                         {activeTab === 'authors' && (
                             <button 
-                                onClick={() => { setEditingAuthor(null); setAuthorForm({ name: '', job_title: '', lang: 'az', avatar: '' }); setIsAuthorModalOpen(true); }}
+                                onClick={() => {
+                                    setEditingAuthor(null);
+                                    setAuthorForm({
+                                        name: '',
+                                        job_title: '',
+                                        lang: 'az',
+                                        avatar: '',
+                                        x_url: '',
+                                        linkedin_url: '',
+                                        facebook_url: '',
+                                        instagram_url: '',
+                                        website_url: ''
+                                    });
+                                    setIsAuthorModalOpen(true);
+                                }}
                                 className="bg-white/10 hover:bg-white/20 text-xs font-bold px-3 py-1.5 rounded-lg transition-all"
                             >
                                 YENİ MÜƏLLİF
@@ -366,7 +400,21 @@ export default function AdminDashboard() {
                                                 <td className="px-6 py-4 text-sm text-gray-500 font-mono">{author.email}</td>
                                                 <td className="px-6 py-4 text-xs uppercase font-bold text-gray-500">{author.lang}</td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <button onClick={() => { setEditingAuthor(author); setAuthorForm({ name: author.name, job_title: author.job_title, lang: author.lang, avatar: author.avatar }); setIsAuthorModalOpen(true); }} className="text-gray-500 hover:text-white mr-4">Redaktə</button>
+                                                    <button onClick={() => {
+                                                        setEditingAuthor(author);
+                                                        setAuthorForm({
+                                                            name: author.name || '',
+                                                            job_title: author.job_title || '',
+                                                            lang: author.lang || 'az',
+                                                            avatar: author.avatar || '',
+                                                            x_url: author.x_url || '',
+                                                            linkedin_url: author.linkedin_url || '',
+                                                            facebook_url: author.facebook_url || '',
+                                                            instagram_url: author.instagram_url || '',
+                                                            website_url: author.website_url || ''
+                                                        });
+                                                        setIsAuthorModalOpen(true);
+                                                    }} className="text-gray-500 hover:text-white mr-4">Redaktə</button>
                                                     <button onClick={() => handleDeleteAuthor(author.id)} className="text-gray-500 hover:text-red-500">Sil</button>
                                                 </td>
                                             </tr>
@@ -460,7 +508,7 @@ export default function AdminDashboard() {
             {/* Author Modal */}
             {isAuthorModalOpen && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-                    <div className="bg-[#111] border border-white/10 w-full max-w-md rounded-2xl p-8 shadow-2xl">
+                    <div className="bg-[#111] border border-white/10 w-full max-w-md rounded-2xl p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
                         <h2 className="text-xl font-bold mb-6">{editingAuthor ? 'Müəllifi Redaktə Et' : 'Yeni Müəllif'}</h2>
                         <form onSubmit={handleAuthorSubmit} className="space-y-4">
                             <div className="flex justify-center mb-6">
@@ -511,6 +559,62 @@ export default function AdminDashboard() {
                                     <option value="en">EN</option>
                                     <option value="ru">RU</option>
                                 </select>
+                            </div>
+
+                            <div className="border-t border-white/5 pt-4">
+                                <h4 className="text-xs font-bold text-red-500 uppercase tracking-widest mb-4">SOSİAL MEDİA LİNKlƏRİ</h4>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">X (Twitter) URL</label>
+                                        <input 
+                                            type="url" 
+                                            value={authorForm.x_url} 
+                                            onChange={e => setAuthorForm({...authorForm, x_url: e.target.value})}
+                                            placeholder="https://x.com/username"
+                                            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">LinkedIn URL</label>
+                                        <input 
+                                            type="url" 
+                                            value={authorForm.linkedin_url} 
+                                            onChange={e => setAuthorForm({...authorForm, linkedin_url: e.target.value})}
+                                            placeholder="https://linkedin.com/in/username"
+                                            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Facebook URL</label>
+                                        <input 
+                                            type="url" 
+                                            value={authorForm.facebook_url} 
+                                            onChange={e => setAuthorForm({...authorForm, facebook_url: e.target.value})}
+                                            placeholder="https://facebook.com/username"
+                                            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Instagram URL</label>
+                                        <input 
+                                            type="url" 
+                                            value={authorForm.instagram_url} 
+                                            onChange={e => setAuthorForm({...authorForm, instagram_url: e.target.value})}
+                                            placeholder="https://instagram.com/username"
+                                            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-500 uppercase tracking-widest mb-2 font-bold">Vebsayt URL</label>
+                                        <input 
+                                            type="url" 
+                                            value={authorForm.website_url} 
+                                            onChange={e => setAuthorForm({...authorForm, website_url: e.target.value})}
+                                            placeholder="https://example.com"
+                                            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none" 
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="flex gap-4 pt-4">
