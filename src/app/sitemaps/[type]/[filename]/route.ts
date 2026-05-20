@@ -134,13 +134,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const postUrl = `https://bond.az${langPrefix}/${post.category_slug}/${post.slug}`;
     return `
     <url>
-      <loc>${postUrl}</loc>
+      <loc>${escapeXml(postUrl)}</loc>
       <lastmod>${new Date(post.date).toISOString()}</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
       ${post.image ? `
       <image:image>
-        <image:loc>${post.image}</image:loc>
+        <image:loc>${escapeXml(post.image)}</image:loc>
         <image:title><![CDATA[${post.title}]]></image:title>
       </image:image>` : ''}
     </url>`;
@@ -193,7 +193,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const url = `https://bond.az${langPrefix}/tag/${tag.slug}`;
     return `
     <url>
-      <loc>${url}</loc>
+      <loc>${escapeXml(url)}</loc>
       <lastmod>${new Date(tag.created_at).toISOString()}</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.5</priority>
@@ -249,9 +249,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const postUrl = `https://bond.az${langPrefix}/${post.category_slug}/${post.slug}`;
     return `
     <url>
-      <loc>${postUrl}</loc>
+      <loc>${escapeXml(postUrl)}</loc>
       <image:image>
-        <image:loc>${post.image}</image:loc>
+        <image:loc>${escapeXml(post.image)}</image:loc>
         <image:title><![CDATA[${post.title}]]></image:title>
         <image:caption><![CDATA[${post.title}]]></image:caption>
       </image:image>

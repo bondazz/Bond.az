@@ -34,6 +34,19 @@ function getRoundedDate(): Date {
   ));
 }
 
+function escapeXml(unsafe: string): string {
+  return unsafe.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return c;
+    }
+  });
+}
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { type: rawType } = await params;
   if (!rawType.endsWith('.xml')) {
@@ -52,9 +65,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       staticPages.map(page => {
         const langPrefix = lang === 'az' ? '' : `/${lang}`;
         const path = page === '' && lang === 'az' ? '' : page;
+        const locUrl = `${baseUrl}${langPrefix}${path}`;
         return `
     <url>
-      <loc>${baseUrl}${langPrefix}${path}</loc>
+      <loc>${escapeXml(locUrl)}</loc>
       <lastmod>${now.toISOString()}</lastmod>
       <changefreq>daily</changefreq>
       <priority>${page === '' ? '1.0' : '0.6'}</priority>
@@ -92,7 +106,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const url = `https://bond.az${langPrefix}/${cat.slug}`;
     return `
     <url>
-      <loc>${url}</loc>
+      <loc>${escapeXml(url)}</loc>
       <lastmod>${new Date(cat.created_at || Date.now()).toISOString()}</lastmod>
       <changefreq>daily</changefreq>
       <priority>0.9</priority>
@@ -126,7 +140,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const url = `${baseUrl}/${lang}/author/${author.slug}`;
     return `
     <url>
-      <loc>${url}</loc>
+      <loc>${escapeXml(url)}</loc>
     </url>`;
   }).join('')}
 </urlset>`;

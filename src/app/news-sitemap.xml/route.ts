@@ -7,6 +7,19 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+function escapeXml(unsafe: string): string {
+  return unsafe.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return c;
+    }
+  });
+}
+
 export async function GET() {
   const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 
@@ -30,7 +43,7 @@ export async function GET() {
     const url = `https://bond.az${langPrefix}/${post.category_slug}/${post.slug}`;
     return `
     <url>
-      <loc>${url}</loc>
+      <loc>${escapeXml(url)}</loc>
       <lastmod>${new Date(post.date).toISOString()}</lastmod>
       <news:news>
         <news:publication>
@@ -40,10 +53,11 @@ export async function GET() {
         <news:publication_date>${new Date(post.date).toISOString()}</news:publication_date>
         <news:title><![CDATA[${post.title}]]></news:title>
       </news:news>
+      ${post.image ? `
       <image:image>
-        <image:loc>${post.image}</image:loc>
+        <image:loc>${escapeXml(post.image)}</image:loc>
         <image:title><![CDATA[${post.title}]]></image:title>
-      </image:image>
+      </image:image>` : ''}
     </url>`;
   }).join('')}
 </urlset>`;
