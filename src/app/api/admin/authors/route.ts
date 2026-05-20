@@ -38,10 +38,10 @@ export async function POST(request: Request) {
         const body = await request.json();
         const supabase = createClient(supabaseUrl, supabaseServiceKey);
         
-        // Auto-generate email based on name
+        // Auto-generate email based on name if not provided
         const finalData = {
             ...body,
-            email: generateEmail(body.name)
+            email: body.email || generateEmail(body.name)
         };
 
         const { data, error } = await supabase
