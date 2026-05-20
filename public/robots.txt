@@ -1,8 +1,33 @@
 User-agent: *
 Allow: /
 
-User-agent: Googlebot-News
-Allow: /
+# Admin & API Endpoints
+Disallow: /admin/
+Disallow: /admin*
+Disallow: /api/admin/
+Disallow: /api/admin*
 
+# Test & Staging Paths
+Disallow: /test/
+Disallow: /test*
+Disallow: /dev/
+Disallow: /dev*
+
+# WordPress Vulnerability Scanners & php files
+Disallow: /wp-admin/
+Disallow: /wp-content/
+Disallow: /wp-includes/
+Disallow: /wp-*.php
+Disallow: /*.php$
+Disallow: /*.php?*
+
+# Non-existent nested Tag paths (e.g. /tag/en/salam)
+Disallow: /tag/*/*
+
+# Crawl Budget Protection (Block indexing query-string duplicates)
+Disallow: /*?*
+Disallow: /*?
+
+# Sitemaps
 Sitemap: https://bond.az/sitemap.xml
 Sitemap: https://bond.az/news-sitemap.xml
