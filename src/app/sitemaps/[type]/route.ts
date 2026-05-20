@@ -44,53 +44,97 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   const baseUrl = 'https://bond.az';
   const now = getRoundedDate();
 
-  // Pages Index
+  // Pages Sitemap
   if (type === 'pages') {
+    const langs = ['az', 'en', 'ru'];
+    const staticPages = ['', '/about', '/contact', '/currencies', '/breaking-news'];
+    const urls = langs.flatMap(lang => 
+      staticPages.map(page => {
+        const langPrefix = lang === 'az' ? '' : `/${lang}`;
+        const path = page === '' && lang === 'az' ? '' : page;
+        return `
+    <url>
+      <loc>${baseUrl}${langPrefix}${path}</loc>
+      <lastmod>${now.toISOString()}</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>${page === '' ? '1.0' : '0.6'}</priority>
+    </url>`;
+      })
+    ).join('');
+
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>${baseUrl}/sitemaps/pages/pages-sitemap.xml</loc>
-    <lastmod>${now.toISOString()}</lastmod>
-  </sitemap>
-</sitemapindex>`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${urls}
+</urlset>`;
+
     return new Response(sitemap, {
       headers: {
         'Content-Type': 'application/xml',
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=1800',
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=3600',
       },
     });
   }
 
-  // Categories Index
+  // Categories Sitemap
   if (type === 'categories') {
+    const { data: categories, error } = await supabase
+      .from('categories')
+      .select('slug, lang, created_at');
+
+    if (error || !categories) {
+      return new Response('Error fetching categories', { status: 500 });
+    }
+
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>${baseUrl}/sitemaps/categories/categories-sitemap.xml</loc>
-    <lastmod>${now.toISOString()}</lastmod>
-  </sitemap>
-</sitemapindex>`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${categories.map((cat) => {
+    const langPrefix = cat.lang === 'az' ? '' : `/${cat.lang}`;
+    const url = `https://bond.az${langPrefix}/${cat.slug}`;
+    return `
+    <url>
+      <loc>${url}</loc>
+      <lastmod>${new Date(cat.created_at || Date.now()).toISOString()}</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.9</priority>
+    </url>`;
+  }).join('')}
+</urlset>`;
+
     return new Response(sitemap, {
       headers: {
         'Content-Type': 'application/xml',
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=1800',
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=3600',
       },
     });
   }
 
-  // Authors Index
+  // Authors Sitemap
   if (type === 'authors') {
+    const { data: authors, error } = await supabase
+      .from('authors')
+      .select('slug, name, lang')
+      .order('name', { ascending: true });
+
+    if (error || !authors) {
+      return new Response('Error fetching authors', { status: 500 });
+    }
+
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>${baseUrl}/sitemaps/authors/authors-sitemap.xml</loc>
-    <lastmod>${now.toISOString()}</lastmod>
-  </sitemap>
-</sitemapindex>`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${authors.map((author) => {
+    const lang = author.lang || 'az';
+    const url = `${baseUrl}/${lang}/author/${author.slug}`;
+    return `
+    <url>
+      <loc>${url}</loc>
+    </url>`;
+  }).join('')}
+</urlset>`;
+
     return new Response(sitemap, {
       headers: {
         'Content-Type': 'application/xml',
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=1800',
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=3600',
       },
     });
   }
